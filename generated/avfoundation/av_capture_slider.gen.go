@@ -1,0 +1,303 @@
+// Code generated from Apple documentation for AVFoundation. DO NOT EDIT.
+
+package avfoundation
+
+import (
+	"sync"
+	"unsafe"
+
+	"github.com/tmc/appledocs/generated/objc"
+	"github.com/tmc/appledocs/generated/objectivec"
+)
+
+
+
+
+
+// The class instance for the [CaptureSlider] class.
+var (
+	CaptureSliderClass     _CaptureSliderClass
+	CaptureSliderClassOnce sync.Once
+)
+
+func getCaptureSliderClass() _CaptureSliderClass {
+	CaptureSliderClassOnce.Do(func() {
+		CaptureSliderClass = _CaptureSliderClass{objc.GetClass("AVCaptureSlider")}
+	})
+	return CaptureSliderClass
+}
+
+type _CaptureSliderClass struct {
+	class objc.Class
+}
+
+
+
+
+
+// An interface definition for the [CaptureSlider] class.
+type ICaptureSlider interface {
+	ICaptureControl
+	
+
+	// properties:
+	AccessibilityIdentifier() foundation.foundation.INSString
+	SetAccessibilityIdentifier(value foundation.foundation.INSString)
+	LocalizedTitle() foundation.foundation.INSString
+	LocalizedValueFormat() foundation.foundation.INSString
+	SetLocalizedValueFormat(value foundation.foundation.INSString)
+	ProminentValues() []foundation.Number
+	SetProminentValues(value []foundation.Number)
+	SymbolName() foundation.foundation.INSString
+	Value() float32
+	SetValue(value float32)
+
+
+	
+
+	// methods:
+	SetActionQueueAction(actionQueue objectivec.IObject, action unsafe.Pointer)
+
+
+}
+
+
+
+
+
+// Alloc allocates a new instance without initialization.
+func (cc _CaptureSliderClass) Alloc() CaptureSlider {
+	rv := objc.Send[CaptureSlider](objc.ID(cc.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func (cc _CaptureSliderClass) New() CaptureSlider {
+	rv := objc.Send[CaptureSlider](objc.ID(cc.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func (c_ CaptureSlider) Init() CaptureSlider {
+	rv := objc.Send[CaptureSlider](c_.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func (c_ CaptureSlider) Autorelease() CaptureSlider {
+	rv := objc.Send[CaptureSlider](c_.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// NewCaptureSlider creates a new CaptureSlider instance.
+func NewCaptureSlider() CaptureSlider {
+	return getCaptureSliderClass().New()
+}
+
+
+
+
+
+// A slider control that selects a value from a bounded range.
+//
+// Sliders are appropriate for controls that provide a single float value.
+
+
+// A slider control that selects a value from a bounded range.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider
+type CaptureSlider struct {
+	CaptureControl
+}
+
+// CaptureSliderFrom constructs a [CaptureSlider] from an unsafe.Pointer.
+//
+// A slider control that selects a value from a bounded range.
+func CaptureSliderFrom(ptr unsafe.Pointer) CaptureSlider {
+	return CaptureSlider{
+		CaptureControl: CaptureControlFrom(ptr),
+	}
+}
+
+
+
+
+
+
+// Creates a continuous slider control that selects a value from a bounded range.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/initWithLocalizedTitle:symbolName:minValue:maxValue:
+func NewCaptureSliderWithLocalizedTitleSymbolNameMinValueMaxValue(localizedTitle foundation.foundation.INSString, symbolName foundation.foundation.INSString, minValue float32, maxValue float32) CaptureSlider {
+	instance := getCaptureSliderClass().Alloc()
+	rv := objc.Send[CaptureSlider](instance.ID, objc.Sel("initWithLocalizedTitle:symbolName:minValue:maxValue:"), localizedTitle, symbolName, minValue, maxValue)
+	rv.Autorelease()
+	return rv
+}
+
+
+// Creates a discrete slider control that selects a stepped value from a bounded range.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/initWithLocalizedTitle:symbolName:minValue:maxValue:step:
+func NewCaptureSliderWithLocalizedTitleSymbolNameMinValueMaxValueStep(localizedTitle foundation.foundation.INSString, symbolName foundation.foundation.INSString, minValue float32, maxValue float32, step float32) CaptureSlider {
+	instance := getCaptureSliderClass().Alloc()
+	rv := objc.Send[CaptureSlider](instance.ID, objc.Sel("initWithLocalizedTitle:symbolName:minValue:maxValue:step:"), localizedTitle, symbolName, minValue, maxValue, step)
+	rv.Autorelease()
+	return rv
+}
+
+
+// Creates a discrete slider control that selects a value from a list.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/initWithLocalizedTitle:symbolName:values:
+func NewCaptureSliderWithLocalizedTitleSymbolNameValues(localizedTitle foundation.foundation.INSString, symbolName foundation.foundation.INSString, values []foundation.Number) CaptureSlider {
+	instance := getCaptureSliderClass().Alloc()
+	rv := objc.Send[CaptureSlider](instance.ID, objc.Sel("initWithLocalizedTitle:symbolName:values:"), localizedTitle, symbolName, values)
+	rv.Autorelease()
+	return rv
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Sets the action to perform on the specified dispatch queue when the slider’s value changes.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/setActionQueue:action:
+func (c_ CaptureSlider) SetActionQueueAction(actionQueue objectivec.IObject, action unsafe.Pointer) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setActionQueue:action:"), actionQueue, action)
+}
+
+
+
+
+
+
+
+// A string identifier for the slider.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/accessibilityIdentifier
+func (c_ CaptureSlider) AccessibilityIdentifier() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](c_.ID, objc.Sel("accessibilityIdentifier"))
+	return rv
+}
+
+
+// A string identifier for the slider.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/accessibilityIdentifier
+func (c_ CaptureSlider) SetAccessibilityIdentifier(value foundation.foundation.INSString) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setAccessibilityIdentifier:"), value)
+}
+
+
+// A localized title that describes the control’s action.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/localizedTitle
+func (c_ CaptureSlider) LocalizedTitle() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](c_.ID, objc.Sel("localizedTitle"))
+	return rv
+}
+
+
+// A localized string that defines the presentation of the slider’s value.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/localizedValueFormat
+func (c_ CaptureSlider) LocalizedValueFormat() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](c_.ID, objc.Sel("localizedValueFormat"))
+	return rv
+}
+
+
+// A localized string that defines the presentation of the slider’s value.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/localizedValueFormat
+func (c_ CaptureSlider) SetLocalizedValueFormat(value foundation.foundation.INSString) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setLocalizedValueFormat:"), value)
+}
+
+
+// Values in this array may receive unique visual representations or behaviors.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/prominentValues-7usgc
+func (c_ CaptureSlider) ProminentValues() []foundation.Number {
+	rv := objc.Send[[]foundation.Number](c_.ID, objc.Sel("prominentValues"))
+	return rv
+}
+
+
+// Values in this array may receive unique visual representations or behaviors.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/prominentValues-7usgc
+func (c_ CaptureSlider) SetProminentValues(value []foundation.Number) {
+	var nsArray objc.ID
+	if len(value) > 0 {
+		nsArray = objc.ID(objc.GetClass("NSMutableArray")).Send(objc.Sel("arrayWithCapacity:"), len(value))
+		for _, item := range value {
+			nsArray.Send(objc.Sel("addObject:"), item)
+		}
+	} else {
+		nsArray = objc.ID(objc.GetClass("NSArray")).Send(objc.Sel("array"))
+	}
+	objc.Send[objc.ID](c_.ID, objc.Sel("setProminentValues:"), nsArray)
+}
+
+
+// The name of the SF Symbol that represents this control.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/symbolName
+func (c_ CaptureSlider) SymbolName() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](c_.ID, objc.Sel("symbolName"))
+	return rv
+}
+
+
+// The current value of the slider.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/value
+func (c_ CaptureSlider) Value() float32 {
+	rv := objc.Send[float32](c_.ID, objc.Sel("value"))
+	return rv
+}
+
+
+// The current value of the slider.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaptureSlider/value
+func (c_ CaptureSlider) SetValue(value float32) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setValue:"), value)
+}
+
+
+
+
+
+
+

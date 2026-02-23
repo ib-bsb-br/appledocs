@@ -1,0 +1,212 @@
+// Code generated from Apple documentation for NetworkExtension. DO NOT EDIT.
+
+package networkextension
+
+import (
+	"sync"
+	"unsafe"
+
+	"github.com/tmc/appledocs/generated/objc"
+	"github.com/tmc/appledocs/generated/objectivec"
+)
+
+
+
+
+
+// The class instance for the [NEHotspotConfiguration] class.
+var (
+	NEHotspotConfigurationClass     _NEHotspotConfigurationClass
+	NEHotspotConfigurationClassOnce sync.Once
+)
+
+func getNEHotspotConfigurationClass() _NEHotspotConfigurationClass {
+	NEHotspotConfigurationClassOnce.Do(func() {
+		NEHotspotConfigurationClass = _NEHotspotConfigurationClass{objc.GetClass("NEHotspotConfiguration")}
+	})
+	return NEHotspotConfigurationClass
+}
+
+type _NEHotspotConfigurationClass struct {
+	class objc.Class
+}
+
+
+
+
+
+// An interface definition for the [NEHotspotConfiguration] class.
+type INEHotspotConfiguration interface {
+	objectivec.IObject
+	
+
+	// properties:
+
+
+	
+
+	// methods:
+
+
+}
+
+
+
+
+
+// Alloc allocates a new instance without initialization.
+func (nc _NEHotspotConfigurationClass) Alloc() NEHotspotConfiguration {
+	rv := objc.Send[NEHotspotConfiguration](objc.ID(nc.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func (nc _NEHotspotConfigurationClass) New() NEHotspotConfiguration {
+	rv := objc.Send[NEHotspotConfiguration](objc.ID(nc.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func (n_ NEHotspotConfiguration) Init() NEHotspotConfiguration {
+	rv := objc.Send[NEHotspotConfiguration](n_.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func (n_ NEHotspotConfiguration) Autorelease() NEHotspotConfiguration {
+	rv := objc.Send[NEHotspotConfiguration](n_.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// NewNEHotspotConfiguration creates a new NEHotspotConfiguration instance.
+func NewNEHotspotConfiguration() NEHotspotConfiguration {
+	return getNEHotspotConfigurationClass().New()
+}
+
+
+
+
+
+// Configuration settings for a Wi-Fi network.
+//
+// The class contains configuration properties and credentials required to connect to Wi-Fi networks.
+
+
+// Configuration settings for a Wi-Fi network.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/NetworkExtension/NEHotspotConfiguration
+type NEHotspotConfiguration struct {
+	objectivec.Object
+}
+
+// NEHotspotConfigurationFrom constructs a [NEHotspotConfiguration] from an unsafe.Pointer.
+//
+// Configuration settings for a Wi-Fi network.
+func NEHotspotConfigurationFrom(ptr unsafe.Pointer) NEHotspotConfiguration {
+	return NEHotspotConfiguration{objectivec.Object{objc.ID(ptr)}}
+}
+
+
+
+
+
+
+// Creates a new hotspot configuration, identified by a domain name, for a Hotspot 2.0 Wi-Fi network with HS 2.0 and EAP settings.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/NetworkExtension/NEHotspotConfiguration/init(hs20Settings:eapSettings:)
+func NewNEHotspotConfigurationWithHS20SettingsEapSettings(hs20Settings INEHotspotHS20Settings, eapSettings INEHotspotEAPSettings) NEHotspotConfiguration {
+	instance := getNEHotspotConfigurationClass().Alloc()
+	rv := objc.Send[NEHotspotConfiguration](instance.ID, objc.Sel("initWithHS20Settings:eapSettings:"), hs20Settings, eapSettings)
+	rv.Autorelease()
+	return rv
+}
+
+
+// Creates a new hotspot configuration, identified by an SSID, for an open Wi-Fi network.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/NetworkExtension/NEHotspotConfiguration/init(ssid:)
+func NewNEHotspotConfigurationWithSSID(SSID foundation.foundation.INSString) NEHotspotConfiguration {
+	instance := getNEHotspotConfigurationClass().Alloc()
+	rv := objc.Send[NEHotspotConfiguration](instance.ID, objc.Sel("initWithSSID:"), SSID)
+	rv.Autorelease()
+	return rv
+}
+
+
+// Creates a new hotspot configuration, identified by an SSID, for a WPA/WPA2 enterprise Wi-Fi network with EAP settings.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/NetworkExtension/NEHotspotConfiguration/init(ssid:eapSettings:)
+func NewNEHotspotConfigurationWithSSIDEapSettings(SSID foundation.foundation.INSString, eapSettings INEHotspotEAPSettings) NEHotspotConfiguration {
+	instance := getNEHotspotConfigurationClass().Alloc()
+	rv := objc.Send[NEHotspotConfiguration](instance.ID, objc.Sel("initWithSSID:eapSettings:"), SSID, eapSettings)
+	rv.Autorelease()
+	return rv
+}
+
+
+// Creates a new hotspot configuration, identified by an SSID, for a protected WEP or WPA/WPA2 personal Wi-Fi network.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/NetworkExtension/NEHotspotConfiguration/init(ssid:passphrase:isWEP:)
+func NewNEHotspotConfigurationWithSSIDPassphraseIsWEP(SSID foundation.foundation.INSString, passphrase foundation.foundation.INSString, isWEP bool) NEHotspotConfiguration {
+	instance := getNEHotspotConfigurationClass().Alloc()
+	rv := objc.Send[NEHotspotConfiguration](instance.ID, objc.Sel("initWithSSID:passphrase:isWEP:"), SSID, passphrase, isWEP)
+	rv.Autorelease()
+	return rv
+}
+
+
+// Creates a new hotspot configuration, identified by an SSID prefix string, for an open Wi-Fi network.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/NetworkExtension/NEHotspotConfiguration/init(ssidPrefix:)
+func NewNEHotspotConfigurationWithSSIDPrefix(SSIDPrefix foundation.foundation.INSString) NEHotspotConfiguration {
+	instance := getNEHotspotConfigurationClass().Alloc()
+	rv := objc.Send[NEHotspotConfiguration](instance.ID, objc.Sel("initWithSSIDPrefix:"), SSIDPrefix)
+	rv.Autorelease()
+	return rv
+}
+
+
+// Creates a new hotspot configuration, identified by an SSID prefix string, for a protected WEP or WPA/WPA2 personal Wi-Fi network.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/NetworkExtension/NEHotspotConfiguration/init(ssidPrefix:passphrase:isWEP:)
+func NewNEHotspotConfigurationWithSSIDPrefixPassphraseIsWEP(SSIDPrefix foundation.foundation.INSString, passphrase foundation.foundation.INSString, isWEP bool) NEHotspotConfiguration {
+	instance := getNEHotspotConfigurationClass().Alloc()
+	rv := objc.Send[NEHotspotConfiguration](instance.ID, objc.Sel("initWithSSIDPrefix:passphrase:isWEP:"), SSIDPrefix, passphrase, isWEP)
+	rv.Autorelease()
+	return rv
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,244 @@
+// Code generated from Apple documentation for MetalPerformanceShaders. DO NOT EDIT.
+
+package metalperformanceshaders
+
+import (
+	"sync"
+	"unsafe"
+
+	"github.com/tmc/appledocs/generated/objc"
+	"github.com/tmc/appledocs/generated/objectivec"
+)
+
+
+
+
+
+// The class instance for the [CNNGradientKernel] class.
+var (
+	CNNGradientKernelClass     _CNNGradientKernelClass
+	CNNGradientKernelClassOnce sync.Once
+)
+
+func getCNNGradientKernelClass() _CNNGradientKernelClass {
+	CNNGradientKernelClassOnce.Do(func() {
+		CNNGradientKernelClass = _CNNGradientKernelClass{objc.GetClass("MPSCNNGradientKernel")}
+	})
+	return CNNGradientKernelClass
+}
+
+type _CNNGradientKernelClass struct {
+	class objc.Class
+}
+
+
+
+
+
+// An interface definition for the [CNNGradientKernel] class.
+type ICNNGradientKernel interface {
+	ICNNBinaryKernel
+	
+
+	// properties:
+	KernelOffsetY() objectivec.IObject
+	SetKernelOffsetY(value objectivec.IObject)
+	KernelOffsetX() objectivec.IObject
+	SetKernelOffsetX(value objectivec.IObject)
+
+
+	
+
+	// methods:
+	EncodeBatch()
+	EncodeBatchToCommandBufferSourceGradientsSourceImagesGradientStatesDestinationGradients(commandBuffer unsafe.Pointer, sourceGradients ImageBatch /* not a class type */, sourceImages ImageBatch /* not a class type */, gradientStates StateBatch /* not a class type */, destinationGradients ImageBatch /* not a class type */)
+	Encode()
+	EncodeToCommandBufferSourceGradientSourceImageGradientState(commandBuffer unsafe.Pointer, sourceGradient IImage, sourceImage IImage, gradientState IState) IImage
+	EncodeBatchToCommandBufferSourceGradientsSourceImagesGradientStates(commandBuffer unsafe.Pointer, sourceGradients ImageBatch /* not a class type */, sourceImages ImageBatch /* not a class type */, gradientStates StateBatch /* not a class type */) ImageBatch /* not a class type */
+	EncodeToCommandBufferSourceGradientSourceImageGradientStateDestinationGradient(commandBuffer unsafe.Pointer, sourceGradient IImage, sourceImage IImage, gradientState IState, destinationGradient IImage)
+
+
+}
+
+
+
+
+
+// Alloc allocates a new instance without initialization.
+func (cc _CNNGradientKernelClass) Alloc() CNNGradientKernel {
+	rv := objc.Send[CNNGradientKernel](objc.ID(cc.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func (cc _CNNGradientKernelClass) New() CNNGradientKernel {
+	rv := objc.Send[CNNGradientKernel](objc.ID(cc.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func (c_ CNNGradientKernel) Init() CNNGradientKernel {
+	rv := objc.Send[CNNGradientKernel](c_.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func (c_ CNNGradientKernel) Autorelease() CNNGradientKernel {
+	rv := objc.Send[CNNGradientKernel](c_.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// NewCNNGradientKernel creates a new CNNGradientKernel instance.
+func NewCNNGradientKernel() CNNGradientKernel {
+	return getCNNGradientKernelClass().New()
+}
+
+
+
+
+
+// The base class for gradient layers.
+
+
+// The base class for gradient layers.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShaders/MPSCNNGradientKernel
+type CNNGradientKernel struct {
+	CNNBinaryKernel
+}
+
+// CNNGradientKernelFrom constructs a [CNNGradientKernel] from an unsafe.Pointer.
+//
+// The base class for gradient layers.
+func CNNGradientKernelFrom(ptr unsafe.Pointer) CNNGradientKernel {
+	return CNNGradientKernel{
+		CNNBinaryKernel: CNNBinaryKernelFrom(ptr),
+	}
+}
+
+
+
+
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/metalperformanceshaders/mpscnngradientkernel/2942647-initwithcoder
+func NewCNNGradientKernelWithCoderDevice(aDecoder foundation.Coder, device unsafe.Pointer) CNNGradientKernel {
+	instance := getCNNGradientKernelClass().Alloc()
+	rv := objc.Send[CNNGradientKernel](instance.ID, objc.Sel("initWithCoder:device:"), aDecoder, device)
+	rv.Autorelease()
+	return rv
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/metalperformanceshaders/mpscnngradientkernel/2942657-initwithdevice
+func NewCNNGradientKernelWithDevice(device unsafe.Pointer) CNNGradientKernel {
+	instance := getCNNGradientKernelClass().Alloc()
+	rv := objc.Send[CNNGradientKernel](instance.ID, objc.Sel("initWithDevice:"), device)
+	rv.Autorelease()
+	return rv
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/metalperformanceshaders/mpscnngradientkernel/2942653-encodebatch
+func (c_ CNNGradientKernel) EncodeBatch() {
+	objc.Send[objc.ID](c_.ID, objc.Sel("encodeBatch"))
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/metalperformanceshaders/mpscnngradientkernel/2942653-encodebatchtocommandbuffer
+func (c_ CNNGradientKernel) EncodeBatchToCommandBufferSourceGradientsSourceImagesGradientStatesDestinationGradients(commandBuffer unsafe.Pointer, sourceGradients ImageBatch /* not a class type */, sourceImages ImageBatch /* not a class type */, gradientStates StateBatch /* not a class type */, destinationGradients ImageBatch /* not a class type */) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("encodeBatchToCommandBuffer:sourceGradients:sourceImages:gradientStates:destinationGradients:"), commandBuffer, sourceGradients, sourceImages, gradientStates, destinationGradients)
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/metalperformanceshaders/mpscnngradientkernel/2942663-encode
+func (c_ CNNGradientKernel) Encode() {
+	objc.Send[objc.ID](c_.ID, objc.Sel("encode"))
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/metalperformanceshaders/mpscnngradientkernel/2942663-encodetocommandbuffer
+func (c_ CNNGradientKernel) EncodeToCommandBufferSourceGradientSourceImageGradientState(commandBuffer unsafe.Pointer, sourceGradient IImage, sourceImage IImage, gradientState IState) IImage {
+	rv := objc.Send[Image](c_.ID, objc.Sel("encodeToCommandBuffer:sourceGradient:sourceImage:gradientState:"), commandBuffer, sourceGradient, sourceImage, gradientState)
+	return rv
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/metalperformanceshaders/mpscnngradientkernel/2942668-encodebatchtocommandbuffer
+func (c_ CNNGradientKernel) EncodeBatchToCommandBufferSourceGradientsSourceImagesGradientStates(commandBuffer unsafe.Pointer, sourceGradients ImageBatch /* not a class type */, sourceImages ImageBatch /* not a class type */, gradientStates StateBatch /* not a class type */) ImageBatch /* not a class type */ {
+	rv := objc.Send[ImageBatch](c_.ID, objc.Sel("encodeBatchToCommandBuffer:sourceGradients:sourceImages:gradientStates:"), commandBuffer, sourceGradients, sourceImages, gradientStates)
+	return rv
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/metalperformanceshaders/mpscnngradientkernel/2942675-encodetocommandbuffer
+func (c_ CNNGradientKernel) EncodeToCommandBufferSourceGradientSourceImageGradientStateDestinationGradient(commandBuffer unsafe.Pointer, sourceGradient IImage, sourceImage IImage, gradientState IState, destinationGradient IImage) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("encodeToCommandBuffer:sourceGradient:sourceImage:gradientState:destinationGradient:"), commandBuffer, sourceGradient, sourceImage, gradientState, destinationGradient)
+}
+
+
+
+
+
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/metalperformanceshaders/mpscnngradientkernel/2942644-kerneloffsety
+func (c_ CNNGradientKernel) KernelOffsetY() objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](c_.ID, objc.Sel("kernelOffsetY"))
+	return rv
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/metalperformanceshaders/mpscnngradientkernel/2942644-kerneloffsety
+func (c_ CNNGradientKernel) SetKernelOffsetY(value objectivec.IObject) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setKernelOffsetY:"), value)
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/metalperformanceshaders/mpscnngradientkernel/2942676-kerneloffsetx
+func (c_ CNNGradientKernel) KernelOffsetX() objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](c_.ID, objc.Sel("kernelOffsetX"))
+	return rv
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/metalperformanceshaders/mpscnngradientkernel/2942676-kerneloffsetx
+func (c_ CNNGradientKernel) SetKernelOffsetX(value objectivec.IObject) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setKernelOffsetX:"), value)
+}
+
+
+
+
+
+
+

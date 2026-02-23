@@ -1,0 +1,331 @@
+// Code generated from Apple documentation for AppKit. DO NOT EDIT.
+
+package appkit
+
+import (
+	"sync"
+	"unsafe"
+
+	"github.com/tmc/appledocs/generated/objc"
+	"github.com/tmc/appledocs/generated/corefoundation"
+)
+
+
+
+
+
+// The class instance for the [SearchField] class.
+var (
+	SearchFieldClass     _SearchFieldClass
+	SearchFieldClassOnce sync.Once
+)
+
+func getSearchFieldClass() _SearchFieldClass {
+	SearchFieldClassOnce.Do(func() {
+		SearchFieldClass = _SearchFieldClass{objc.GetClass("NSSearchField")}
+	})
+	return SearchFieldClass
+}
+
+type _SearchFieldClass struct {
+	class objc.Class
+}
+
+
+
+
+
+// An interface definition for the [SearchField] class.
+type ISearchField interface {
+	ITextField
+	
+
+	// properties:
+	CancelButtonBounds() corefoundation.CGRect
+	CentersPlaceholder() bool
+	SetCentersPlaceholder(value bool)
+	MaximumRecents() int
+	SetMaximumRecents(value int)
+	RecentsAutosaveName() SearchFieldRecentsAutosaveName
+	SetRecentsAutosaveName(value SearchFieldRecentsAutosaveName)
+	RecentSearches() []string
+	SetRecentSearches(value []string)
+	SearchButtonBounds() corefoundation.CGRect
+	SearchMenuTemplate() IMenu
+	SetSearchMenuTemplate(value IMenu)
+	SearchTextBounds() corefoundation.CGRect
+	SendsSearchStringImmediately() bool
+	SetSendsSearchStringImmediately(value bool)
+	SendsWholeSearchString() bool
+	SetSendsWholeSearchString(value bool)
+
+
+	
+
+	// methods:
+
+
+}
+
+
+
+
+
+// Alloc allocates a new instance without initialization.
+func (sc _SearchFieldClass) Alloc() SearchField {
+	rv := objc.Send[SearchField](objc.ID(sc.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func (sc _SearchFieldClass) New() SearchField {
+	rv := objc.Send[SearchField](objc.ID(sc.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func (s_ SearchField) Init() SearchField {
+	rv := objc.Send[SearchField](s_.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func (s_ SearchField) Autorelease() SearchField {
+	rv := objc.Send[SearchField](s_.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// NewSearchField creates a new SearchField instance.
+func NewSearchField() SearchField {
+	return getSearchFieldClass().New()
+}
+
+
+
+
+
+// A text field optimized for performing text-based searches.
+//
+// provides a customized text field for entering search data. The class also provides a search button, a cancel button, and a pop-up icon menu for listing recent search strings and custom search categories. An object wraps an object. The cell provides access to most search field attributes and a comprehensive programmatic interface for manipulating the search field. You can use an object to manipulate some aspects of the search field. For additional information about search fields and how to implement them, see the class.
+
+
+// A text field optimized for performing text-based searches.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField
+type SearchField struct {
+	TextField
+}
+
+// SearchFieldFrom constructs a [SearchField] from an unsafe.Pointer.
+//
+// A text field optimized for performing text-based searches.
+func SearchFieldFrom(ptr unsafe.Pointer) SearchField {
+	return SearchField{
+		TextField: TextFieldFrom(ptr),
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// The rectangle for the cancel button within the bounds of the search field.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/cancelButtonBounds
+func (s_ SearchField) CancelButtonBounds() corefoundation.CGRect {
+	rv := objc.Send[corefoundation.CGRect](s_.ID, objc.Sel("cancelButtonBounds"))
+	return rv
+}
+
+
+// A Boolean value that determines whether the search field’s components are centered within the control.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/centersPlaceholder
+func (s_ SearchField) CentersPlaceholder() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("centersPlaceholder"))
+	return rv
+}
+
+
+// A Boolean value that determines whether the search field’s components are centered within the control.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/centersPlaceholder
+func (s_ SearchField) SetCentersPlaceholder(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setCentersPlaceholder:"), value)
+}
+
+
+// The maximum number of search strings that can appear in the search menu.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/maximumRecents
+func (s_ SearchField) MaximumRecents() int {
+	rv := objc.Send[int](s_.ID, objc.Sel("maximumRecents"))
+	return rv
+}
+
+
+// The maximum number of search strings that can appear in the search menu.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/maximumRecents
+func (s_ SearchField) SetMaximumRecents(value int) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setMaximumRecents:"), value)
+}
+
+
+// The name under which the search field automatically archives the list of recent search strings.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/recentsAutosaveName-swift.property
+func (s_ SearchField) RecentsAutosaveName() SearchFieldRecentsAutosaveName {
+	rv := objc.Send[SearchFieldRecentsAutosaveName](s_.ID, objc.Sel("recentsAutosaveName"))
+	return rv
+}
+
+
+// The name under which the search field automatically archives the list of recent search strings.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/recentsAutosaveName-swift.property
+func (s_ SearchField) SetRecentsAutosaveName(value SearchFieldRecentsAutosaveName) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setRecentsAutosaveName:"), value)
+}
+
+
+// The list of recent search strings for the control.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/recentSearches
+func (s_ SearchField) RecentSearches() []string {
+	rv := objc.Send[[]string](s_.ID, objc.Sel("recentSearches"))
+	return rv
+}
+
+
+// The list of recent search strings for the control.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/recentSearches
+func (s_ SearchField) SetRecentSearches(value []string) {
+	var nsArray objc.ID
+	if len(value) > 0 {
+		nsArray = objc.ID(objc.GetClass("NSMutableArray")).Send(objc.Sel("arrayWithCapacity:"), len(value))
+		for _, item := range value {
+			nsArray.Send(objc.Sel("addObject:"), item)
+		}
+	} else {
+		nsArray = objc.ID(objc.GetClass("NSArray")).Send(objc.Sel("array"))
+	}
+	objc.Send[objc.ID](s_.ID, objc.Sel("setRecentSearches:"), nsArray)
+}
+
+
+// The rectangle for the search button within the bounds of the search field.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/searchButtonBounds
+func (s_ SearchField) SearchButtonBounds() corefoundation.CGRect {
+	rv := objc.Send[corefoundation.CGRect](s_.ID, objc.Sel("searchButtonBounds"))
+	return rv
+}
+
+
+// The menu object used to dynamically construct the search field’s pop-up icon menu.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/searchMenuTemplate
+func (s_ SearchField) SearchMenuTemplate() IMenu {
+	rv := objc.Send[Menu](s_.ID, objc.Sel("searchMenuTemplate"))
+	return rv
+}
+
+
+// The menu object used to dynamically construct the search field’s pop-up icon menu.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/searchMenuTemplate
+func (s_ SearchField) SetSearchMenuTemplate(value IMenu) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setSearchMenuTemplate:"), value)
+}
+
+
+// The rectangle for the search text within the bounds of the search field.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/searchTextBounds
+func (s_ SearchField) SearchTextBounds() corefoundation.CGRect {
+	rv := objc.Send[corefoundation.CGRect](s_.ID, objc.Sel("searchTextBounds"))
+	return rv
+}
+
+
+// A Boolean value indicating whether the cell calls its action method immediately when an appropriate action occurs.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/sendsSearchStringImmediately
+func (s_ SearchField) SendsSearchStringImmediately() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("sendsSearchStringImmediately"))
+	return rv
+}
+
+
+// A Boolean value indicating whether the cell calls its action method immediately when an appropriate action occurs.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/sendsSearchStringImmediately
+func (s_ SearchField) SetSendsSearchStringImmediately(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setSendsSearchStringImmediately:"), value)
+}
+
+
+// A Boolean value indicating whether the cell calls its search action method when the user clicks the search button or presses Return, or after each keystroke.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/sendsWholeSearchString
+func (s_ SearchField) SendsWholeSearchString() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("sendsWholeSearchString"))
+	return rv
+}
+
+
+// A Boolean value indicating whether the cell calls its search action method when the user clicks the search button or presses Return, or after each keystroke.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSearchField/sendsWholeSearchString
+func (s_ SearchField) SetSendsWholeSearchString(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setSendsWholeSearchString:"), value)
+}
+
+
+
+
+
+
+
+

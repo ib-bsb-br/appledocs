@@ -1,0 +1,111 @@
+# Configuration for framework binding generation
+#
+# Note: Deprecation status and iOS-only detection are now automatically extracted
+# from Apple's framework documentation metadata. Manual deprecation_reason entries
+# are no longer needed and will be overridden by auto-detected values.
+#
+# Test Generation Strategy:
+# - Tests are generated for parameterless instance methods (not class methods)
+# - Property accessors are filtered out by filterPropertyMethods() to avoid duplicates
+# - Essential selectors (init, autorelease, etc.) are generated but not executed
+# - Methods inherited from NSObject are filtered to avoid redeclaration
+# - Safety is determined by isSafeToTestOnNSObject() which:
+#   1. Whitelists known-safe core methods (dealloc, finalize, etc.)
+#   2. Blacklists methods matching unsafe_selector_patterns below
+#   3. Defaults to SAFE if no pattern matches (assumes property getters are safe)
+# - Safe tests include "// Output:" to make them executable
+# - Unsafe tests include a note explaining why they're not executed
+
+# Unsafe selectors for test generation
+# These are methods that crash when called on bare NSObject instances
+# because they come from categories/protocols meant to be overridden
+#
+# Patterns are regular expressions matched against lowercased selector names
+#
+# Testing methodology:
+# - Each pattern has been verified to cause crashes on bare NSObject
+# - Patterns should be as specific as possible to avoid false positives
+# - When adding patterns, document which specific methods crash
+unsafe_selector_patterns:
+  - ^accessibility        # Accessibility protocol methods (e.g., isAccessibilityElement, accessibilityFrame)
+  - ^webplugin           # WebPlugIn protocol methods
+  - ^image               # Image browser protocol methods
+  - ^action              # Action protocol methods
+  - ^browser             # Browser protocol methods
+  - ^file                # File transfer protocol methods
+  - ^awake               # Nib loading methods
+  - ^commit              # Editor protocol methods
+  - ^discard             # Editor protocol methods
+  - ^prepare             # Interface Builder methods
+  - ^ignoremodifier      # Drag protocol methods
+  - ^getl2cap            # Bluetooth protocol methods
+  - selectable$          # selectable and isSelectable crash (UI selection protocol)
+  - ^finalizeforwebscript$  # WebScript protocol method (exact match)
+
+# Synthetic typedefs to inject into generated code
+# These are types that should be defined but aren't documented by Apple
+# NOTE: Names should NOT include the framework prefix (CG/CF/NS) as it will be stripped by the template
+synthetic_typedefs:
+  CoreFoundation: []
+    # CGFloat is now mapped directly to float64 in typemapping.go
+  CoreGraphics:
+    - name: CGDisplayReservationInterval
+      base_type: float32
+    - name: CGDisplayFadeInterval
+      base_type: float32
+    - name: CGDirectDisplayID
+      base_type: uint32
+    # - name: CGFloat
+    #   base_type: double
+    #   abstract: "A type for floating-point scalar values in Core Graphics and related frameworks."
+    #   comment: "No longer needed - CGFloat maps directly to float64"
+
+  Foundation:
+    - name: NSTimeInterval
+      base_type: double
+      abstract: "A number of seconds (typedef for double)."
+    # TimeInterval is parsed from Swift documentation, so we don't need to add it synthetically
+    # - name: ItemProviderRepresentationVisibility
+    #   base_type: int
+    #   abstract: "Specifications that control which categories of processes can see an item."
+    #   enum_values:
+    #     - name: ItemProviderRepresentationVisibilityAll
+    #       value: 0
+    #       abstract: "A representation visibility specification conferring item visibility to all processes."
+    #     - name: ItemProviderRepresentationVisibilityTeam
+    #       value: 1
+    #       abstract: "A representation visibility specification confining item visibility to processes created by the app's development team."
+    #     - name: ItemProviderRepresentationVisibilityGroup
+    #       value: 2
+    #       abstract: "A representation visibility specification confining item visibility to the app's app group."
+    #     - name: ItemProviderRepresentationVisibilityOwnProcess
+    #       value: 3
+    #       abstract: "A representation visibility specification confining item visibility to the app that is the source of the item."
+
+frameworks:
+  Foundation:
+    # Classes that should not have test examples generated (e.g., require parameters)
+    exclude_test_examples:
+      - NSUserActivity  # Requires activityType parameter
+      - NSPredicate  # Crashes with invalid format string parameter
+    exclude_test_patterns:
+      - "^ExampleNewNotification$"  # NSNotification requires name parameter, crashes with empty notification
+  AppKit:
+    exclude_test_examples:
+      - NSFilePromiseProvider  # Requires valid NSFilePromiseProviderDelegate implementation with writePromiseToURL: method
+  ObjectiveC:
+    exclude_test_examples: []
+  CloudKit:
+    exclude_test_patterns:
+      - "^ExampleNewCKContainerWithIdentifier$"  # CKContainer requires CloudKit entitlements and container configuration
+      - "^ExampleNewCKOperation$"  # CKOperation is an abstract class that cannot be instantiated directly
+  CoreImage:
+    exclude_test_patterns:
+      - "^ExampleNewContextWithMTLCommandQueue$"  # Requires Metal command queue which needs GPU access
+  QuartzCore:
+    exclude_test_examples:
+      - CAAnimation  # Causes crash with nil keyPath parameter
+      - CAPropertyAnimation  # Causes crash with keyPath parameter
+  UserNotifications:
+    exclude_test_examples:
+      - UNTimeIntervalNotificationTrigger  # Requires timeInterval > 0, default value of 0 causes crash

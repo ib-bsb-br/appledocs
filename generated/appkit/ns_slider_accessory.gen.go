@@ -1,0 +1,200 @@
+// Code generated from Apple documentation for AppKit. DO NOT EDIT.
+
+package appkit
+
+import (
+	"sync"
+	"unsafe"
+
+	"github.com/tmc/appledocs/generated/objc"
+	"github.com/tmc/appledocs/generated/objectivec"
+)
+
+
+
+
+
+// The class instance for the [SliderAccessory] class.
+var (
+	SliderAccessoryClass     _SliderAccessoryClass
+	SliderAccessoryClassOnce sync.Once
+)
+
+func getSliderAccessoryClass() _SliderAccessoryClass {
+	SliderAccessoryClassOnce.Do(func() {
+		SliderAccessoryClass = _SliderAccessoryClass{objc.GetClass("NSSliderAccessory")}
+	})
+	return SliderAccessoryClass
+}
+
+type _SliderAccessoryClass struct {
+	class objc.Class
+}
+
+
+
+
+
+// An interface definition for the [SliderAccessory] class.
+type ISliderAccessory interface {
+	objectivec.IObject
+	
+
+	// properties:
+	Behavior() ISliderAccessoryBehavior
+	SetBehavior(value ISliderAccessoryBehavior)
+	Enabled() bool
+	SetEnabled(value bool)
+	IsEnabled() bool
+	SetIsEnabled(value bool)
+
+
+	
+
+	// methods:
+
+
+}
+
+
+
+
+
+// Alloc allocates a new instance without initialization.
+func (sc _SliderAccessoryClass) Alloc() SliderAccessory {
+	rv := objc.Send[SliderAccessory](objc.ID(sc.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func (sc _SliderAccessoryClass) New() SliderAccessory {
+	rv := objc.Send[SliderAccessory](objc.ID(sc.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func (s_ SliderAccessory) Init() SliderAccessory {
+	rv := objc.Send[SliderAccessory](s_.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func (s_ SliderAccessory) Autorelease() SliderAccessory {
+	rv := objc.Send[SliderAccessory](s_.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// NewSliderAccessory creates a new SliderAccessory instance.
+func NewSliderAccessory() SliderAccessory {
+	return getSliderAccessoryClass().New()
+}
+
+
+
+
+
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSliderAccessory
+type SliderAccessory struct {
+	objectivec.Object
+}
+
+// SliderAccessoryFrom constructs a [SliderAccessory] from an unsafe.Pointer.
+func SliderAccessoryFrom(ptr unsafe.Pointer) SliderAccessory {
+	return SliderAccessory{objectivec.Object{objc.ID(ptr)}}
+}
+
+
+
+
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSliderAccessory/init(image:)
+func NewSliderAccessoryWithImage(image IImage) SliderAccessory {
+	rv := objc.Send[SliderAccessory](objc.ID(getSliderAccessoryClass().class), objc.Sel("accessoryWithImage:"), image)
+	return rv
+}
+
+
+
+
+
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSliderAccessory/init(image:)
+func (sc _SliderAccessoryClass) AccessoryWithImage(image IImage) ISliderAccessory {
+	rv := objc.Send[SliderAccessory](objc.ID(sc.class), objc.Sel("accessoryWithImage:"), image)
+	return rv
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSliderAccessory/behavior
+func (s_ SliderAccessory) Behavior() ISliderAccessoryBehavior {
+	rv := objc.Send[SliderAccessoryBehavior](s_.ID, objc.Sel("behavior"))
+	return rv
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSliderAccessory/behavior
+func (s_ SliderAccessory) SetBehavior(value ISliderAccessoryBehavior) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setBehavior:"), value)
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSliderAccessory/isEnabled
+func (s_ SliderAccessory) Enabled() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("enabled"))
+	return rv
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSliderAccessory/isEnabled
+func (s_ SliderAccessory) SetEnabled(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setEnabled:"), value)
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nsslideraccessory/isenabled
+func (s_ SliderAccessory) IsEnabled() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("isEnabled"))
+	return rv
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nsslideraccessory/isenabled
+func (s_ SliderAccessory) SetIsEnabled(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setIsEnabled:"), value)
+}
+
+
+
+
+
+
+

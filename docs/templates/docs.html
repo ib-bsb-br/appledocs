@@ -1,0 +1,343 @@
+{{define "layout"}}{{$navigation := loadJSON "docs-navigation.json"}}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}} - Apple Developer Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1d1d1f;
+        }
+
+        .docs-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #fafafa;
+            border-right: 1px solid #d2d2d7;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .sidebar-nav {
+            padding: 0 20px;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #86868b;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            margin-bottom: 2px;
+        }
+
+        .nav-item a {
+            display: block;
+            padding: 6px 12px;
+            color: #1d1d1f;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .nav-item a:hover {
+            background: #e8e8ed;
+        }
+
+        .nav-item.active > a {
+            background: #007aff;
+            color: white;
+        }
+
+        .nav-children {
+            margin-left: 16px;
+            margin-top: 4px;
+        }
+
+        .nav-children .nav-item a {
+            font-size: 13px;
+            color: #6e6e73;
+            font-family: 'SF Mono', Monaco, Menlo, monospace;
+        }
+
+        .nav-children .nav-item a:hover {
+            color: #1d1d1f;
+        }
+
+        .nav-topic {
+            margin-left: 16px;
+            margin-top: 8px;
+        }
+
+        .nav-topic-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #86868b;
+            margin-bottom: 4px;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-topic-items {
+            margin-bottom: 8px;
+        }
+
+        .nav-topic-items .nav-item a {
+            font-size: 13px;
+            color: #6e6e73;
+            font-family: 'SF Mono', Monaco, Menlo, monospace;
+        }
+
+        .nav-topic-items .nav-item a:hover {
+            color: #1d1d1f;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 40px 60px;
+            max-width: 1000px;
+        }
+
+        .article-content {
+            max-width: 800px;
+        }
+
+        h1 {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-top: 40px;
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin-bottom: 16px;
+        }
+
+        code {
+            background: #f5f5f7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, Menlo, monospace;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            display: block;
+            background: #1d1d1f;
+            color: #f5f5f7;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        a {
+            color: #007aff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        blockquote {
+            border-left: 4px solid #007aff;
+            padding-left: 16px;
+            margin: 20px 0;
+            color: #6e6e73;
+        }
+
+        ul, ol {
+            margin-left: 24px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="docs-layout">
+        <nav class="sidebar">
+            <div class="sidebar-nav">
+                {{range $navigation.sections}}
+                <div class="nav-section" data-framework="{{.title}}">
+                    <div class="nav-section-title">{{.title}}</div>
+                    {{range .items}}
+                    <div class="nav-item">
+                        <a href="{{.path}}">{{.title}}</a>
+                        {{if .topics}}
+                        {{range .topics}}
+                        <div class="nav-topic">
+                            <div class="nav-topic-title">{{.title}}</div>
+                            <div class="nav-topic-items">
+                                {{range .items}}
+                                <div class="nav-item">
+                                    <a href="{{.path}}">{{.title}}</a>
+                                </div>
+                                {{end}}
+                            </div>
+                        </div>
+                        {{end}}
+                        {{else if .children}}
+                        <div class="nav-children">
+                            {{range .children}}
+                            <div class="nav-item">
+                                <a href="{{.path}}">{{.title}}</a>
+                            </div>
+                            {{end}}
+                        </div>
+                        {{end}}
+                    </div>
+                    {{end}}
+                </div>
+                {{end}}
+            </div>
+        </nav>
+        <script>
+            // Show only Overview and the current framework's section
+            document.addEventListener('DOMContentLoaded', function() {
+                const currentPath = window.location.pathname;
+                const frameworkSections = document.querySelectorAll('[data-framework]');
+
+                // Extract framework name from path (e.g., /tutorials/data/documentation/SecurityFoundation/...)
+                const pathParts = currentPath.split('/');
+                let pathFramework = pathParts[4]; // pathParts: ['', 'tutorials', 'data', 'documentation', 'FrameworkName', ...]
+                // Strip .md extension if present
+                if (pathFramework && pathFramework.endsWith('.md')) {
+                    pathFramework = pathFramework.replace(/\.md$/, '');
+                }
+
+                // Map framework names (some have spaces in navigation but not in paths)
+                const frameworkMap = {
+                    'Security Foundation': 'SecurityFoundation',
+                    'Security Interface': 'SecurityInterface'
+                };
+
+                // Always show Overview, hide all other framework sections except the current one
+                frameworkSections.forEach(section => {
+                    const framework = section.getAttribute('data-framework');
+
+                    if (framework === 'Overview') {
+                        // Always show Overview
+                        section.style.display = 'block';
+                    } else {
+                        const mappedFramework = frameworkMap[framework] || framework.replace(/\s+/g, '');
+
+                        if (mappedFramework === pathFramework || framework === pathFramework) {
+                            section.style.display = 'block';
+                        } else {
+                            section.style.display = 'none';
+                        }
+                    }
+                });
+
+                // Highlight current page in navigation
+                // Strip .md extension from current path and decode URL encoding
+                const normalizedCurrentPath = decodeURIComponent(currentPath.replace(/\.md$/, ''));
+
+                const allNavLinks = document.querySelectorAll('.nav-item a');
+                allNavLinks.forEach(link => {
+                    const linkPath = link.getAttribute('href');
+                    const normalizedLinkPath = decodeURIComponent(linkPath);
+
+                    if (normalizedLinkPath === normalizedCurrentPath) {
+                        link.parentElement.classList.add('active');
+                    }
+                });
+
+                // Make sidebar contextual to current class
+                // If we're viewing a method (pathParts.length > 5), only show that class
+                // But first check if this is actually a class page (has topics/children in nav)
+                if (pathParts.length > 5) {
+                    // Extract potential class name from path
+                    // e.g., /tutorials/data/documentation/SecurityFoundation/SFAuthorization/method
+                    const currentClass = pathParts[5];
+
+                    // Check if there's actually a nav item with topics/children for this class
+                    // If not, it's probably an article/guide page, not a class method page
+                    let isClassPage = false;
+                    frameworkSections.forEach(section => {
+                        if (section.style.display !== 'none') {
+                            const classNavItems = section.querySelectorAll('.nav-item');
+                            classNavItems.forEach(navItem => {
+                                const navLink = navItem.querySelector('a');
+                                if (navLink) {
+                                    const navPath = navLink.getAttribute('href');
+                                    const navPathParts = navPath.split('/');
+                                    // Check if this nav item matches the current class and has topics/children
+                                    if (navPathParts.length > 4 && navPathParts[5] === currentClass) {
+                                        if (navItem.querySelector('.nav-topic, .nav-children')) {
+                                            isClassPage = true;
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+
+                    // Only filter if this is actually a class page
+                    if (isClassPage) {
+                        // Hide all class nav items except the current one
+                        frameworkSections.forEach(section => {
+                            if (section.style.display !== 'none') {
+                                const classNavItems = section.querySelectorAll('.nav-item');
+                                classNavItems.forEach(navItem => {
+                                    const navLink = navItem.querySelector('a');
+                                    if (navLink) {
+                                        const navPath = navLink.getAttribute('href');
+                                        const navPathParts = navPath.split('/');
+                                        // Check if this nav item is for a different class
+                                        if (navPathParts.length > 5 && navPathParts[5] !== currentClass && navPathParts[5] !== '') {
+                                            navItem.style.display = 'none';
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        </script>
+        <main class="main-content">
+            <div class="article-content">
+                {{.Content}}
+            </div>
+        </main>
+    </div>
+</body>
+</html>{{end}}

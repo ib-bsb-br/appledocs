@@ -1,0 +1,361 @@
+// Code generated from Apple documentation for MetalPerformanceShadersGraph. DO NOT EDIT.
+
+package metalperformanceshadersgraph
+
+import (
+	"sync"
+	"unsafe"
+
+	"github.com/tmc/appledocs/generated/objc"
+)
+
+
+
+
+
+// The class instance for the [GraphLSTMDescriptor] class.
+var (
+	GraphLSTMDescriptorClass     _GraphLSTMDescriptorClass
+	GraphLSTMDescriptorClassOnce sync.Once
+)
+
+func getGraphLSTMDescriptorClass() _GraphLSTMDescriptorClass {
+	GraphLSTMDescriptorClassOnce.Do(func() {
+		GraphLSTMDescriptorClass = _GraphLSTMDescriptorClass{objc.GetClass("MPSGraphLSTMDescriptor")}
+	})
+	return GraphLSTMDescriptorClass
+}
+
+type _GraphLSTMDescriptorClass struct {
+	class objc.Class
+}
+
+
+
+
+
+// An interface definition for the [GraphLSTMDescriptor] class.
+type IGraphLSTMDescriptor interface {
+	IGraphObject
+	
+
+	// properties:
+	Activation() GraphRNNActivation
+	SetActivation(value GraphRNNActivation)
+	Bidirectional() bool
+	SetBidirectional(value bool)
+	CellGateActivation() GraphRNNActivation
+	SetCellGateActivation(value GraphRNNActivation)
+	ForgetGateActivation() GraphRNNActivation
+	SetForgetGateActivation(value GraphRNNActivation)
+	ForgetGateLast() bool
+	SetForgetGateLast(value bool)
+	InputGateActivation() GraphRNNActivation
+	SetInputGateActivation(value GraphRNNActivation)
+	OutputGateActivation() GraphRNNActivation
+	SetOutputGateActivation(value GraphRNNActivation)
+	ProduceCell() bool
+	SetProduceCell(value bool)
+	Reverse() bool
+	SetReverse(value bool)
+	Training() bool
+	SetTraining(value bool)
+
+
+	
+
+	// methods:
+
+
+}
+
+
+
+
+
+// Alloc allocates a new instance without initialization.
+func (gc _GraphLSTMDescriptorClass) Alloc() GraphLSTMDescriptor {
+	rv := objc.Send[GraphLSTMDescriptor](objc.ID(gc.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func (gc _GraphLSTMDescriptorClass) New() GraphLSTMDescriptor {
+	rv := objc.Send[GraphLSTMDescriptor](objc.ID(gc.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func (g_ GraphLSTMDescriptor) Init() GraphLSTMDescriptor {
+	rv := objc.Send[GraphLSTMDescriptor](g_.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func (g_ GraphLSTMDescriptor) Autorelease() GraphLSTMDescriptor {
+	rv := objc.Send[GraphLSTMDescriptor](g_.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// NewGraphLSTMDescriptor creates a new GraphLSTMDescriptor instance.
+func NewGraphLSTMDescriptor() GraphLSTMDescriptor {
+	return getGraphLSTMDescriptorClass().New()
+}
+
+
+
+
+
+// The class that defines the parameters for a long short-term memory (LSTM) operation.
+//
+// Use this descriptor with the following methods:
+
+
+// The class that defines the parameters for a long short-term memory (LSTM) operation.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor
+type GraphLSTMDescriptor struct {
+	GraphObject
+}
+
+// GraphLSTMDescriptorFrom constructs a [GraphLSTMDescriptor] from an unsafe.Pointer.
+//
+// The class that defines the parameters for a long short-term memory (LSTM) operation.
+func GraphLSTMDescriptorFrom(ptr unsafe.Pointer) GraphLSTMDescriptor {
+	return GraphLSTMDescriptor{
+		GraphObject: GraphObjectFrom(ptr),
+	}
+}
+
+
+
+
+
+
+
+
+
+
+// Creates an LSTM descriptor with default values.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/descriptor
+func (gc _GraphLSTMDescriptorClass) Descriptor() unsafe.Pointer {
+	rv := objc.Send[unsafe.Pointer](objc.ID(gc.class), objc.Sel("descriptor"))
+	return rv
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// A parameter that defines the activation function used with the current cell value of the LSTM operation.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/activation
+func (g_ GraphLSTMDescriptor) Activation() GraphRNNActivation {
+	rv := objc.Send[GraphRNNActivation](g_.ID, objc.Sel("activation"))
+	return rv
+}
+
+
+// A parameter that defines the activation function used with the current cell value of the LSTM operation.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/activation
+func (g_ GraphLSTMDescriptor) SetActivation(value GraphRNNActivation) {
+	objc.Send[objc.ID](g_.ID, objc.Sel("setActivation:"), value)
+}
+
+
+// A parameter that defines a bidirectional LSTM layer.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/bidirectional
+func (g_ GraphLSTMDescriptor) Bidirectional() bool {
+	rv := objc.Send[bool](g_.ID, objc.Sel("bidirectional"))
+	return rv
+}
+
+
+// A parameter that defines a bidirectional LSTM layer.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/bidirectional
+func (g_ GraphLSTMDescriptor) SetBidirectional(value bool) {
+	objc.Send[objc.ID](g_.ID, objc.Sel("setBidirectional:"), value)
+}
+
+
+// A parameter that defines the activation function used with the cell gate of the LSTM operation.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/cellGateActivation
+func (g_ GraphLSTMDescriptor) CellGateActivation() GraphRNNActivation {
+	rv := objc.Send[GraphRNNActivation](g_.ID, objc.Sel("cellGateActivation"))
+	return rv
+}
+
+
+// A parameter that defines the activation function used with the cell gate of the LSTM operation.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/cellGateActivation
+func (g_ GraphLSTMDescriptor) SetCellGateActivation(value GraphRNNActivation) {
+	objc.Send[objc.ID](g_.ID, objc.Sel("setCellGateActivation:"), value)
+}
+
+
+// A parameter that defines the activation function used with the forget gate of the LSTM operation.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/forgetGateActivation
+func (g_ GraphLSTMDescriptor) ForgetGateActivation() GraphRNNActivation {
+	rv := objc.Send[GraphRNNActivation](g_.ID, objc.Sel("forgetGateActivation"))
+	return rv
+}
+
+
+// A parameter that defines the activation function used with the forget gate of the LSTM operation.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/forgetGateActivation
+func (g_ GraphLSTMDescriptor) SetForgetGateActivation(value GraphRNNActivation) {
+	objc.Send[objc.ID](g_.ID, objc.Sel("setForgetGateActivation:"), value)
+}
+
+
+// A parameter that controls the internal order of the LSTM gates.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/forgetGateLast
+func (g_ GraphLSTMDescriptor) ForgetGateLast() bool {
+	rv := objc.Send[bool](g_.ID, objc.Sel("forgetGateLast"))
+	return rv
+}
+
+
+// A parameter that controls the internal order of the LSTM gates.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/forgetGateLast
+func (g_ GraphLSTMDescriptor) SetForgetGateLast(value bool) {
+	objc.Send[objc.ID](g_.ID, objc.Sel("setForgetGateLast:"), value)
+}
+
+
+// A parameter that defines the activation function used with the input gate of the LSTM operation.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/inputGateActivation
+func (g_ GraphLSTMDescriptor) InputGateActivation() GraphRNNActivation {
+	rv := objc.Send[GraphRNNActivation](g_.ID, objc.Sel("inputGateActivation"))
+	return rv
+}
+
+
+// A parameter that defines the activation function used with the input gate of the LSTM operation.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/inputGateActivation
+func (g_ GraphLSTMDescriptor) SetInputGateActivation(value GraphRNNActivation) {
+	objc.Send[objc.ID](g_.ID, objc.Sel("setInputGateActivation:"), value)
+}
+
+
+// A parameter that defines the activation function used with the output gate of the LSTM operation.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/outputGateActivation
+func (g_ GraphLSTMDescriptor) OutputGateActivation() GraphRNNActivation {
+	rv := objc.Send[GraphRNNActivation](g_.ID, objc.Sel("outputGateActivation"))
+	return rv
+}
+
+
+// A parameter that defines the activation function used with the output gate of the LSTM operation.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/outputGateActivation
+func (g_ GraphLSTMDescriptor) SetOutputGateActivation(value GraphRNNActivation) {
+	objc.Send[objc.ID](g_.ID, objc.Sel("setOutputGateActivation:"), value)
+}
+
+
+// A parameter that controls whether or not to return the output cell from the LSTM layer.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/produceCell
+func (g_ GraphLSTMDescriptor) ProduceCell() bool {
+	rv := objc.Send[bool](g_.ID, objc.Sel("produceCell"))
+	return rv
+}
+
+
+// A parameter that controls whether or not to return the output cell from the LSTM layer.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/produceCell
+func (g_ GraphLSTMDescriptor) SetProduceCell(value bool) {
+	objc.Send[objc.ID](g_.ID, objc.Sel("setProduceCell:"), value)
+}
+
+
+// A parameter that defines time direction of the input sequence.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/reverse
+func (g_ GraphLSTMDescriptor) Reverse() bool {
+	rv := objc.Send[bool](g_.ID, objc.Sel("reverse"))
+	return rv
+}
+
+
+// A parameter that defines time direction of the input sequence.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/reverse
+func (g_ GraphLSTMDescriptor) SetReverse(value bool) {
+	objc.Send[objc.ID](g_.ID, objc.Sel("setReverse:"), value)
+}
+
+
+// A parameter that enables the LSTM layer to support training.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/training
+func (g_ GraphLSTMDescriptor) Training() bool {
+	rv := objc.Send[bool](g_.ID, objc.Sel("training"))
+	return rv
+}
+
+
+// A parameter that enables the LSTM layer to support training.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/MetalPerformanceShadersGraph/MPSGraphLSTMDescriptor/training
+func (g_ GraphLSTMDescriptor) SetTraining(value bool) {
+	objc.Send[objc.ID](g_.ID, objc.Sel("setTraining:"), value)
+}
+
+
+
+
+
+
+
+

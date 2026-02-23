@@ -1,0 +1,695 @@
+// Code generated from Apple documentation for AppKit. DO NOT EDIT.
+
+package appkit
+
+import (
+	"sync"
+	"unsafe"
+
+	"github.com/tmc/appledocs/generated/objc"
+	"github.com/tmc/appledocs/generated/objectivec"
+)
+
+
+
+
+
+// The class instance for the [SavePanel] class.
+var (
+	SavePanelClass     _SavePanelClass
+	SavePanelClassOnce sync.Once
+)
+
+func getSavePanelClass() _SavePanelClass {
+	SavePanelClassOnce.Do(func() {
+		SavePanelClass = _SavePanelClass{objc.GetClass("NSSavePanel")}
+	})
+	return SavePanelClass
+}
+
+type _SavePanelClass struct {
+	class objc.Class
+}
+
+
+
+
+
+// An interface definition for the [SavePanel] class.
+type ISavePanel interface {
+	IPanel
+	
+
+	// properties:
+	AccessoryView() IView
+	SetAccessoryView(value IView)
+	AllowedContentTypes() []uniformtypeidentifiers.uniformtypeidentifiers.IUTType
+	SetAllowedContentTypes(value []uniformtypeidentifiers.uniformtypeidentifiers.IUTType)
+	AllowedFileTypes() []string
+	SetAllowedFileTypes(value []string)
+	AllowsOtherFileTypes() bool
+	SetAllowsOtherFileTypes(value bool)
+	CanCreateDirectories() bool
+	SetCanCreateDirectories(value bool)
+	CanSelectHiddenExtension() bool
+	SetCanSelectHiddenExtension(value bool)
+	DirectoryURL() foundation.foundation.INSURL
+	SetDirectoryURL(value foundation.foundation.INSURL)
+	Expanded() bool
+	ExtensionHidden() bool
+	SetExtensionHidden(value bool)
+	Message() foundation.foundation.INSString
+	SetMessage(value foundation.foundation.INSString)
+	NameFieldLabel() foundation.foundation.INSString
+	SetNameFieldLabel(value foundation.foundation.INSString)
+	NameFieldStringValue() foundation.foundation.INSString
+	SetNameFieldStringValue(value foundation.foundation.INSString)
+	Prompt() foundation.foundation.INSString
+	SetPrompt(value foundation.foundation.INSString)
+	ShowsHiddenFiles() bool
+	SetShowsHiddenFiles(value bool)
+	ShowsTagField() bool
+	SetShowsTagField(value bool)
+	TagNames() []string
+	SetTagNames(value []string)
+	Title() foundation.foundation.INSString
+	SetTitle(value foundation.foundation.INSString)
+	TreatsFilePackagesAsDirectories() bool
+	SetTreatsFilePackagesAsDirectories(value bool)
+	URL() foundation.foundation.INSURL
+	CurrentContentType() uniformtypeidentifiers.uniformtypeidentifiers.IUTType
+	SetCurrentContentType(value uniformtypeidentifiers.uniformtypeidentifiers.IUTType)
+	Identifier() UserInterfaceItemIdentifier
+	SetIdentifier(value UserInterfaceItemIdentifier)
+	IsExpanded() bool
+	SetIsExpanded(value bool)
+	IsExtensionHidden() bool
+	SetIsExtensionHidden(value bool)
+	ShowsContentTypes() bool
+	SetShowsContentTypes(value bool)
+
+
+	
+
+	// methods:
+	BeginWithCompletionHandler(handler unsafe.Pointer)
+	BeginSheetModalForWindowCompletionHandler(window IWindow, handler unsafe.Pointer)
+	RunModal() ModalResponse
+	ValidateVisibleColumns()
+
+
+}
+
+
+
+
+
+// Alloc allocates a new instance without initialization.
+func (sc _SavePanelClass) Alloc() SavePanel {
+	rv := objc.Send[SavePanel](objc.ID(sc.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func (sc _SavePanelClass) New() SavePanel {
+	rv := objc.Send[SavePanel](objc.ID(sc.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func (s_ SavePanel) Init() SavePanel {
+	rv := objc.Send[SavePanel](s_.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func (s_ SavePanel) Autorelease() SavePanel {
+	rv := objc.Send[SavePanel](s_.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// NewSavePanel creates a new SavePanel instance.
+func NewSavePanel() SavePanel {
+	return getSavePanelClass().New()
+}
+
+
+
+
+
+// A panel that prompts the user for information about where to save a file.
+//
+// The Save panel provides an interface for specifying the location to save a file and the name of that file. You present this panel when the user attempts to save a new document, or when the user saves a copy of an existing document to a new location. The panel includes UI for browsing the file system, selecting a directory, and specifying the new name for the file. You can also add custom UI for your app using an accessory view. An object reports user interactions to its associated object, which must adopt the protocol. Use your delegate object to validate the user’s selection and respond to user interactions with the panel. In macOS 10.15, the system always displays the Save dialog in a separate process, regardless of whether the app is sandboxed. When the user saves the document, macOS adds the saved file to the app’s sandbox (if necessary) so that the app can write to the file. Prior to macOS 10.15, the system used a separate process only for sandboxed apps.
+
+
+// A panel that prompts the user for information about where to save a file.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel
+type SavePanel struct {
+	Panel
+}
+
+// SavePanelFrom constructs a [SavePanel] from an unsafe.Pointer.
+//
+// A panel that prompts the user for information about where to save a file.
+func SavePanelFrom(ptr unsafe.Pointer) SavePanel {
+	return SavePanel{
+		Panel: PanelFrom(ptr),
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Presents the panel as a modeless window.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/begin(completionHandler:)
+func (s_ SavePanel) BeginWithCompletionHandler(handler unsafe.Pointer) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("beginWithCompletionHandler:"), handler)
+}
+
+
+// Presents the panel as a sheet modal to the specified window.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/beginSheetModal(for:completionHandler:)
+func (s_ SavePanel) BeginSheetModalForWindowCompletionHandler(window IWindow, handler unsafe.Pointer) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("beginSheetModalForWindow:completionHandler:"), window, handler)
+}
+
+
+// Displays the panel and begins its event loop with the current working (or last-selected) directory as the default starting point.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/runModal()
+func (s_ SavePanel) RunModal() ModalResponse {
+	rv := objc.Send[ModalResponse](s_.ID, objc.Sel("runModal"))
+	return rv
+}
+
+
+// Validates and reloads the browser columns visible in the panel.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/validateVisibleColumns()
+func (s_ SavePanel) ValidateVisibleColumns() {
+	objc.Send[objc.ID](s_.ID, objc.Sel("validateVisibleColumns"))
+}
+
+
+
+
+
+
+
+// The custom accessory view for the current app.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/accessoryView
+func (s_ SavePanel) AccessoryView() IView {
+	rv := objc.Send[View](s_.ID, objc.Sel("accessoryView"))
+	return rv
+}
+
+
+// The custom accessory view for the current app.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/accessoryView
+func (s_ SavePanel) SetAccessoryView(value IView) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setAccessoryView:"), value)
+}
+
+
+// An array of types that specify the files types to which you can save.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/allowedContentTypes
+func (s_ SavePanel) AllowedContentTypes() []uniformtypeidentifiers.uniformtypeidentifiers.IUTType {
+	rv := objc.Send[[]uniformtypeidentifiers.UTType](s_.ID, objc.Sel("allowedContentTypes"))
+	// Slice of concrete type to slice of interface - needs conversion
+	result := make([]uniformtypeidentifiers.uniformtypeidentifiers.IUTType, len(rv))
+	for i, v := range rv {
+		result[i] = v
+	}
+	return result
+}
+
+
+// An array of types that specify the files types to which you can save.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/allowedContentTypes
+func (s_ SavePanel) SetAllowedContentTypes(value []uniformtypeidentifiers.uniformtypeidentifiers.IUTType) {
+	var nsArray objc.ID
+	if len(value) > 0 {
+		nsArray = objc.ID(objc.GetClass("NSMutableArray")).Send(objc.Sel("arrayWithCapacity:"), len(value))
+		for _, item := range value {
+			nsArray.Send(objc.Sel("addObject:"), item)
+		}
+	} else {
+		nsArray = objc.ID(objc.GetClass("NSArray")).Send(objc.Sel("array"))
+	}
+	objc.Send[objc.ID](s_.ID, objc.Sel("setAllowedContentTypes:"), nsArray)
+}
+
+
+// An array of filename extensions or UTIs that represent the allowed file types for the panel.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/allowedFileTypes
+func (s_ SavePanel) AllowedFileTypes() []string {
+	rv := objc.Send[[]string](s_.ID, objc.Sel("allowedFileTypes"))
+	return rv
+}
+
+
+// An array of filename extensions or UTIs that represent the allowed file types for the panel.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/allowedFileTypes
+func (s_ SavePanel) SetAllowedFileTypes(value []string) {
+	var nsArray objc.ID
+	if len(value) > 0 {
+		nsArray = objc.ID(objc.GetClass("NSMutableArray")).Send(objc.Sel("arrayWithCapacity:"), len(value))
+		for _, item := range value {
+			nsArray.Send(objc.Sel("addObject:"), item)
+		}
+	} else {
+		nsArray = objc.ID(objc.GetClass("NSArray")).Send(objc.Sel("array"))
+	}
+	objc.Send[objc.ID](s_.ID, objc.Sel("setAllowedFileTypes:"), nsArray)
+}
+
+
+// A Boolean value that indicates whether the panel allows the user to save files with a filename extension that’s not in the list of allowed types.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/allowsOtherFileTypes
+func (s_ SavePanel) AllowsOtherFileTypes() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("allowsOtherFileTypes"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether the panel allows the user to save files with a filename extension that’s not in the list of allowed types.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/allowsOtherFileTypes
+func (s_ SavePanel) SetAllowsOtherFileTypes(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setAllowsOtherFileTypes:"), value)
+}
+
+
+// A Boolean value that indicates whether the panel displays UI for creating directories.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/canCreateDirectories
+func (s_ SavePanel) CanCreateDirectories() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("canCreateDirectories"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether the panel displays UI for creating directories.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/canCreateDirectories
+func (s_ SavePanel) SetCanCreateDirectories(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setCanCreateDirectories:"), value)
+}
+
+
+// A Boolean value that indicates whether the panel displays UI for hiding or showing filename extensions.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/canSelectHiddenExtension
+func (s_ SavePanel) CanSelectHiddenExtension() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("canSelectHiddenExtension"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether the panel displays UI for hiding or showing filename extensions.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/canSelectHiddenExtension
+func (s_ SavePanel) SetCanSelectHiddenExtension(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setCanSelectHiddenExtension:"), value)
+}
+
+
+// The current directory shown in the panel.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/directoryURL
+func (s_ SavePanel) DirectoryURL() foundation.foundation.INSURL {
+	rv := objc.Send[foundation.NSURL](s_.ID, objc.Sel("directoryURL"))
+	return rv
+}
+
+
+// The current directory shown in the panel.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/directoryURL
+func (s_ SavePanel) SetDirectoryURL(value foundation.foundation.INSURL) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setDirectoryURL:"), value)
+}
+
+
+// A Boolean value that indicates whether whether the panel is expanded.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/isExpanded
+func (s_ SavePanel) Expanded() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("expanded"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether to display filename extensions.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/isExtensionHidden
+func (s_ SavePanel) ExtensionHidden() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("extensionHidden"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether to display filename extensions.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/isExtensionHidden
+func (s_ SavePanel) SetExtensionHidden(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setExtensionHidden:"), value)
+}
+
+
+// The message text displayed in the panel.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/message
+func (s_ SavePanel) Message() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](s_.ID, objc.Sel("message"))
+	return rv
+}
+
+
+// The message text displayed in the panel.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/message
+func (s_ SavePanel) SetMessage(value foundation.foundation.INSString) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setMessage:"), value)
+}
+
+
+// The label text displayed in front of the filename text field.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/nameFieldLabel
+func (s_ SavePanel) NameFieldLabel() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](s_.ID, objc.Sel("nameFieldLabel"))
+	return rv
+}
+
+
+// The label text displayed in front of the filename text field.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/nameFieldLabel
+func (s_ SavePanel) SetNameFieldLabel(value foundation.foundation.INSString) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setNameFieldLabel:"), value)
+}
+
+
+// The user-editable filename currently shown in the name field.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/nameFieldStringValue
+func (s_ SavePanel) NameFieldStringValue() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](s_.ID, objc.Sel("nameFieldStringValue"))
+	return rv
+}
+
+
+// The user-editable filename currently shown in the name field.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/nameFieldStringValue
+func (s_ SavePanel) SetNameFieldStringValue(value foundation.foundation.INSString) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setNameFieldStringValue:"), value)
+}
+
+
+// The text to display in the default button.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/prompt
+func (s_ SavePanel) Prompt() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](s_.ID, objc.Sel("prompt"))
+	return rv
+}
+
+
+// The text to display in the default button.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/prompt
+func (s_ SavePanel) SetPrompt(value foundation.foundation.INSString) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setPrompt:"), value)
+}
+
+
+// A Boolean value that indicates whether the panel displays files that are normally hidden from the user.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/showsHiddenFiles
+func (s_ SavePanel) ShowsHiddenFiles() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("showsHiddenFiles"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether the panel displays files that are normally hidden from the user.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/showsHiddenFiles
+func (s_ SavePanel) SetShowsHiddenFiles(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setShowsHiddenFiles:"), value)
+}
+
+
+// A Boolean value that indicates whether the panel displays the Tags field.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/showsTagField
+func (s_ SavePanel) ShowsTagField() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("showsTagField"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether the panel displays the Tags field.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/showsTagField
+func (s_ SavePanel) SetShowsTagField(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setShowsTagField:"), value)
+}
+
+
+// The tag names that you want to include on a saved file.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/tagNames
+func (s_ SavePanel) TagNames() []string {
+	rv := objc.Send[[]string](s_.ID, objc.Sel("tagNames"))
+	return rv
+}
+
+
+// The tag names that you want to include on a saved file.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/tagNames
+func (s_ SavePanel) SetTagNames(value []string) {
+	var nsArray objc.ID
+	if len(value) > 0 {
+		nsArray = objc.ID(objc.GetClass("NSMutableArray")).Send(objc.Sel("arrayWithCapacity:"), len(value))
+		for _, item := range value {
+			nsArray.Send(objc.Sel("addObject:"), item)
+		}
+	} else {
+		nsArray = objc.ID(objc.GetClass("NSArray")).Send(objc.Sel("array"))
+	}
+	objc.Send[objc.ID](s_.ID, objc.Sel("setTagNames:"), nsArray)
+}
+
+
+// The title of the panel.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/title
+func (s_ SavePanel) Title() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](s_.ID, objc.Sel("title"))
+	return rv
+}
+
+
+// The title of the panel.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/title
+func (s_ SavePanel) SetTitle(value foundation.foundation.INSString) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setTitle:"), value)
+}
+
+
+// A Boolean value that indicates whether the panel displays file packages as directories.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/treatsFilePackagesAsDirectories
+func (s_ SavePanel) TreatsFilePackagesAsDirectories() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("treatsFilePackagesAsDirectories"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether the panel displays file packages as directories.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/treatsFilePackagesAsDirectories
+func (s_ SavePanel) SetTreatsFilePackagesAsDirectories(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setTreatsFilePackagesAsDirectories:"), value)
+}
+
+
+// A URL that contains the fully specified location of the targeted file.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSSavePanel/url
+func (s_ SavePanel) URL() foundation.foundation.INSURL {
+	rv := objc.Send[foundation.NSURL](s_.ID, objc.Sel("URL"))
+	return rv
+}
+
+
+// :The current type. If set to
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nssavepanel/currentcontenttype
+func (s_ SavePanel) CurrentContentType() uniformtypeidentifiers.uniformtypeidentifiers.IUTType {
+	rv := objc.Send[uniformtypeidentifiers.UTType](s_.ID, objc.Sel("currentContentType"))
+	return rv
+}
+
+
+// :The current type. If set to
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nssavepanel/currentcontenttype
+func (s_ SavePanel) SetCurrentContentType(value uniformtypeidentifiers.uniformtypeidentifiers.IUTType) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setCurrentContentType:"), value)
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nssavepanel/identifier
+func (s_ SavePanel) Identifier() UserInterfaceItemIdentifier {
+	rv := objc.Send[UserInterfaceItemIdentifier](s_.ID, objc.Sel("identifier"))
+	return rv
+}
+
+
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nssavepanel/identifier
+func (s_ SavePanel) SetIdentifier(value UserInterfaceItemIdentifier) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setIdentifier:"), value)
+}
+
+
+// A Boolean value that indicates whether whether the panel is expanded.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nssavepanel/isexpanded
+func (s_ SavePanel) IsExpanded() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("isExpanded"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether whether the panel is expanded.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nssavepanel/isexpanded
+func (s_ SavePanel) SetIsExpanded(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setIsExpanded:"), value)
+}
+
+
+// A Boolean value that indicates whether to display filename extensions.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nssavepanel/isextensionhidden
+func (s_ SavePanel) IsExtensionHidden() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("isExtensionHidden"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether to display filename extensions.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nssavepanel/isextensionhidden
+func (s_ SavePanel) SetIsExtensionHidden(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setIsExtensionHidden:"), value)
+}
+
+
+// : Whether or not to show a control for selecting the type of the saved file.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nssavepanel/showscontenttypes
+func (s_ SavePanel) ShowsContentTypes() bool {
+	rv := objc.Send[bool](s_.ID, objc.Sel("showsContentTypes"))
+	return rv
+}
+
+
+// : Whether or not to show a control for selecting the type of the saved file.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nssavepanel/showscontenttypes
+func (s_ SavePanel) SetShowsContentTypes(value bool) {
+	objc.Send[objc.ID](s_.ID, objc.Sel("setShowsContentTypes:"), value)
+}
+
+
+
+
+
+
+
+

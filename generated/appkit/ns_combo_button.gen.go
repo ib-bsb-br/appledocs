@@ -1,0 +1,328 @@
+// Code generated from Apple documentation for AppKit. DO NOT EDIT.
+
+package appkit
+
+import (
+	"sync"
+	"unsafe"
+
+	"github.com/tmc/appledocs/generated/objc"
+	"github.com/tmc/appledocs/generated/objectivec"
+)
+
+
+
+
+
+// The class instance for the [ComboButton] class.
+var (
+	ComboButtonClass     _ComboButtonClass
+	ComboButtonClassOnce sync.Once
+)
+
+func getComboButtonClass() _ComboButtonClass {
+	ComboButtonClassOnce.Do(func() {
+		ComboButtonClass = _ComboButtonClass{objc.GetClass("NSComboButton")}
+	})
+	return ComboButtonClass
+}
+
+type _ComboButtonClass struct {
+	class objc.Class
+}
+
+
+
+
+
+// An interface definition for the [ComboButton] class.
+type IComboButton interface {
+	IControl
+	
+
+	// properties:
+	Image() IImage
+	SetImage(value IImage)
+	ImageScaling() ImageScaling
+	SetImageScaling(value ImageScaling)
+	Menu() IMenu
+	SetMenu(value IMenu)
+	Style() ComboButtonStyle
+	SetStyle(value ComboButtonStyle)
+	Title() foundation.foundation.INSString
+	SetTitle(value foundation.foundation.INSString)
+	Action() objectivec.IObject
+	SetAction(value objectivec.IObject)
+
+
+	
+
+	// methods:
+
+
+}
+
+
+
+
+
+// Alloc allocates a new instance without initialization.
+func (cc _ComboButtonClass) Alloc() ComboButton {
+	rv := objc.Send[ComboButton](objc.ID(cc.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func (cc _ComboButtonClass) New() ComboButton {
+	rv := objc.Send[ComboButton](objc.ID(cc.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func (c_ ComboButton) Init() ComboButton {
+	rv := objc.Send[ComboButton](c_.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func (c_ ComboButton) Autorelease() ComboButton {
+	rv := objc.Send[ComboButton](c_.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// NewComboButton creates a new ComboButton instance.
+func NewComboButton() ComboButton {
+	return getComboButtonClass().New()
+}
+
+
+
+
+
+// A button with a pull-down menu and a default action.
+//
+// An object is a button that displays a title string, image, and an optional control for displaying a menu. Use this control in places where you want to offer a button with a default action and one or more alternative actions. Clicking the title or image executes the default action you provide, and clicking the menu control displays a menu for selecting a different action. If you configure the button to hide the menu control, a long-press gesture displays the menu. After you create a combo button programmatically or in Interface Builder, choose the button you want and add a title or image for your content. A combo button has a default action, which you specify at creation time. You can also change that action later using the inherited and properties. To specify one or more alternative actions, configure a menu with those actions and assign it to the button’s property. This control doesn’t use an object for its underlying implementation. It also doesn’t support the addition of a contextual menu.
+
+
+// A button with a pull-down menu and a default action.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton
+type ComboButton struct {
+	Control
+}
+
+// ComboButtonFrom constructs a [ComboButton] from an unsafe.Pointer.
+//
+// A button with a pull-down menu and a default action.
+func ComboButtonFrom(ptr unsafe.Pointer) ComboButton {
+	return ComboButton{
+		Control: ControlFrom(ptr),
+	}
+}
+
+
+
+
+
+
+// Creates a combo button that displays an image.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/init(image:menu:target:action:)
+func NewComboButtonWithImageMenuTargetAction(image IImage, menu IMenu, target objectivec.IObject, action objc.SEL) ComboButton {
+	rv := objc.Send[ComboButton](objc.ID(getComboButtonClass().class), objc.Sel("comboButtonWithImage:menu:target:action:"), image, menu, target, action)
+	return rv
+}
+
+
+// Creates a combo button that displays both a title and image.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/init(title:image:menu:target:action:)
+func NewComboButtonWithTitleImageMenuTargetAction(title foundation.foundation.INSString, image IImage, menu IMenu, target objectivec.IObject, action objc.SEL) ComboButton {
+	rv := objc.Send[ComboButton](objc.ID(getComboButtonClass().class), objc.Sel("comboButtonWithTitle:image:menu:target:action:"), title, image, menu, target, action)
+	return rv
+}
+
+
+// Creates a combo button that displays a title.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/init(title:menu:target:action:)
+func NewComboButtonWithTitleMenuTargetAction(title foundation.foundation.INSString, menu IMenu, target objectivec.IObject, action objc.SEL) ComboButton {
+	rv := objc.Send[ComboButton](objc.ID(getComboButtonClass().class), objc.Sel("comboButtonWithTitle:menu:target:action:"), title, menu, target, action)
+	return rv
+}
+
+
+
+
+
+
+
+// Creates a combo button that displays an image.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/init(image:menu:target:action:)
+func (cc _ComboButtonClass) ComboButtonWithImageMenuTargetAction(image IImage, menu IMenu, target objectivec.IObject, action objc.SEL) objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](objc.ID(cc.class), objc.Sel("comboButtonWithImage:menu:target:action:"), image, menu, target, action)
+	return rv
+}
+
+
+// Creates a combo button that displays both a title and image.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/init(title:image:menu:target:action:)
+func (cc _ComboButtonClass) ComboButtonWithTitleImageMenuTargetAction(title foundation.foundation.INSString, image IImage, menu IMenu, target objectivec.IObject, action objc.SEL) objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](objc.ID(cc.class), objc.Sel("comboButtonWithTitle:image:menu:target:action:"), title, image, menu, target, action)
+	return rv
+}
+
+
+// Creates a combo button that displays a title.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/init(title:menu:target:action:)
+func (cc _ComboButtonClass) ComboButtonWithTitleMenuTargetAction(title foundation.foundation.INSString, menu IMenu, target objectivec.IObject, action objc.SEL) objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](objc.ID(cc.class), objc.Sel("comboButtonWithTitle:menu:target:action:"), title, menu, target, action)
+	return rv
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// The image that the button displays.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/image
+func (c_ ComboButton) Image() IImage {
+	rv := objc.Send[Image](c_.ID, objc.Sel("image"))
+	return rv
+}
+
+
+// The image that the button displays.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/image
+func (c_ ComboButton) SetImage(value IImage) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setImage:"), value)
+}
+
+
+// The scaling behavior to apply to the button’s image.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/imageScaling
+func (c_ ComboButton) ImageScaling() ImageScaling {
+	rv := objc.Send[ImageScaling](c_.ID, objc.Sel("imageScaling"))
+	return rv
+}
+
+
+// The scaling behavior to apply to the button’s image.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/imageScaling
+func (c_ ComboButton) SetImageScaling(value ImageScaling) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setImageScaling:"), value)
+}
+
+
+// The menu that contains the button’s alternate actions.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/menu
+func (c_ ComboButton) Menu() IMenu {
+	rv := objc.Send[Menu](c_.ID, objc.Sel("menu"))
+	return rv
+}
+
+
+// The menu that contains the button’s alternate actions.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/menu
+func (c_ ComboButton) SetMenu(value IMenu) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setMenu:"), value)
+}
+
+
+// The appearance setting that determines how the button presents its menu .
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/style-swift.property
+func (c_ ComboButton) Style() ComboButtonStyle {
+	rv := objc.Send[ComboButtonStyle](c_.ID, objc.Sel("style"))
+	return rv
+}
+
+
+// The appearance setting that determines how the button presents its menu .
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/style-swift.property
+func (c_ ComboButton) SetStyle(value ComboButtonStyle) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setStyle:"), value)
+}
+
+
+// The localized string that the button displays.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/title
+func (c_ ComboButton) Title() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](c_.ID, objc.Sel("title"))
+	return rv
+}
+
+
+// The localized string that the button displays.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSComboButton/title
+func (c_ ComboButton) SetTitle(value foundation.foundation.INSString) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setTitle:"), value)
+}
+
+
+// The default action-message selector associated with the control.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nscontrol/action
+func (c_ ComboButton) Action() objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](c_.ID, objc.Sel("action"))
+	return rv
+}
+
+
+// The default action-message selector associated with the control.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nscontrol/action
+func (c_ ComboButton) SetAction(value objectivec.IObject) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setAction:"), value)
+}
+
+
+
+
+
+
+

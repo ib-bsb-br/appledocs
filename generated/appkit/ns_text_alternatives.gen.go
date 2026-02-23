@@ -1,0 +1,182 @@
+// Code generated from Apple documentation for AppKit. DO NOT EDIT.
+
+package appkit
+
+import (
+	"sync"
+	"unsafe"
+
+	"github.com/tmc/appledocs/generated/objc"
+	"github.com/tmc/appledocs/generated/objectivec"
+)
+
+
+
+
+
+// The class instance for the [TextAlternatives] class.
+var (
+	TextAlternativesClass     _TextAlternativesClass
+	TextAlternativesClassOnce sync.Once
+)
+
+func getTextAlternativesClass() _TextAlternativesClass {
+	TextAlternativesClassOnce.Do(func() {
+		TextAlternativesClass = _TextAlternativesClass{objc.GetClass("NSTextAlternatives")}
+	})
+	return TextAlternativesClass
+}
+
+type _TextAlternativesClass struct {
+	class objc.Class
+}
+
+
+
+
+
+// An interface definition for the [TextAlternatives] class.
+type ITextAlternatives interface {
+	objectivec.IObject
+	
+
+	// properties:
+	AlternativeStrings() foundation.foundation.INSString
+	SetAlternativeStrings(value foundation.foundation.INSString)
+	PrimaryString() foundation.foundation.INSString
+	SetPrimaryString(value foundation.foundation.INSString)
+
+
+	
+
+	// methods:
+
+
+}
+
+
+
+
+
+// Alloc allocates a new instance without initialization.
+func (tc _TextAlternativesClass) Alloc() TextAlternatives {
+	rv := objc.Send[TextAlternatives](objc.ID(tc.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func (tc _TextAlternativesClass) New() TextAlternatives {
+	rv := objc.Send[TextAlternatives](objc.ID(tc.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func (t_ TextAlternatives) Init() TextAlternatives {
+	rv := objc.Send[TextAlternatives](t_.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func (t_ TextAlternatives) Autorelease() TextAlternatives {
+	rv := objc.Send[TextAlternatives](t_.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// NewTextAlternatives creates a new TextAlternatives instance.
+func NewTextAlternatives() TextAlternatives {
+	return getTextAlternativesClass().New()
+}
+
+
+
+
+
+// A list of alternative strings for a piece of text.
+//
+// is an immutable value class that stores a list of alternatives for a piece of text and communicates the user’s selection of an alternative via a notification to your app. To support dictation, for example, you might use to present a list of alternative interpretations for a word or phrase the user speaks. If the user chooses to replace the initial interpretation with an alternative, notifies you of the choice so that you can update the text appropriately. instances are attached to attributed strings as the value of a text attribute, .
+
+
+// A list of alternative strings for a piece of text.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AppKit/NSTextAlternatives
+type TextAlternatives struct {
+	objectivec.Object
+}
+
+// TextAlternativesFrom constructs a [TextAlternatives] from an unsafe.Pointer.
+//
+// A list of alternative strings for a piece of text.
+func TextAlternativesFrom(ptr unsafe.Pointer) TextAlternatives {
+	return TextAlternatives{objectivec.Object{objc.ID(ptr)}}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// An array of alternative possible interpretations that the user might select.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nstextalternatives/alternativestrings
+func (t_ TextAlternatives) AlternativeStrings() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](t_.ID, objc.Sel("alternativeStrings"))
+	return rv
+}
+
+
+// An array of alternative possible interpretations that the user might select.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nstextalternatives/alternativestrings
+func (t_ TextAlternatives) SetAlternativeStrings(value foundation.foundation.INSString) {
+	objc.Send[objc.ID](t_.ID, objc.Sel("setAlternativeStrings:"), value)
+}
+
+
+// The text that was initially chosen as the input string.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nstextalternatives/primarystring
+func (t_ TextAlternatives) PrimaryString() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](t_.ID, objc.Sel("primaryString"))
+	return rv
+}
+
+
+// The text that was initially chosen as the input string.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/appkit/nstextalternatives/primarystring
+func (t_ TextAlternatives) SetPrimaryString(value foundation.foundation.INSString) {
+	objc.Send[objc.ID](t_.ID, objc.Sel("setPrimaryString:"), value)
+}
+
+
+
+
+
+
+
+

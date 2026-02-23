@@ -1,0 +1,171 @@
+"""
+Types and queries for the Apple Documentation API
+"""
+schema {
+  query: Query
+}
+
+"""
+The root query type
+"""
+type Query {
+  """
+  Get a document by its path
+  """
+  document(path: String!): Document
+
+  """
+  Search for documents containing a query string
+  """
+  search(query: String!, limit: Int): SearchResult
+
+  """
+  Get a list of all frameworks
+  """
+  frameworks: [Document!]!
+
+  """
+  Get a specific framework by ID
+  """
+  framework(id: String!): Document
+
+  """
+  Get documents of a specific type within a framework
+  """
+  documentsByType(type: String!, framework: String): [Document!]!
+
+  """
+  Get documents for a specific platform within a framework
+  """
+  documentsByPlatform(platform: String!, framework: String): [Document!]!
+
+  """
+  Get documents related to a specific document
+  """
+  relatedDocuments(path: String!, limit: Int): [Document!]!
+}
+
+"""
+Represents an Apple documentation document
+"""
+type Document {
+  """
+  The document identifier
+  """
+  id: ID!
+
+  """
+  The document path
+  """
+  path: String!
+
+  """
+  The document title
+  """
+  title: String
+
+  """
+  A brief description of the document
+  """
+  abstract: String
+
+  """
+  The type of document (e.g., "Class", "Protocol", "Function")
+  """
+  type: String
+
+  """
+  Whether the document is marked as deprecated
+  """
+  isDeprecated: Boolean
+
+  """
+  The framework this document belongs to
+  """
+  framework: String
+
+  """
+  Platforms this document is available on
+  """
+  platforms: [Platform!]
+
+  """
+  Sections within the document
+  """
+  sections: [Section!]
+
+  """
+  The full document content
+  """
+  content: JSON
+}
+
+"""
+Represents a platform that a document is available on
+"""
+type Platform {
+  """
+  The platform name (e.g., "iOS", "macOS")
+  """
+  name: String!
+
+  """
+  The version this feature was introduced in
+  """
+  introducedAt: String
+
+  """
+  The version this feature was deprecated in (if applicable)
+  """
+  deprecatedAt: String
+
+  """
+  Whether this platform is in beta
+  """
+  beta: Boolean
+}
+
+"""
+Represents a section within a document
+"""
+type Section {
+  """
+  The section title
+  """
+  title: String
+
+  """
+  The type of section
+  """
+  kind: String
+
+  """
+  The section content
+  """
+  content: String
+}
+
+"""
+Results of a search query
+"""
+type SearchResult {
+  """
+  The list of found documents
+  """
+  documents: [Document!]!
+
+  """
+  The number of documents found
+  """
+  count: Int!
+
+  """
+  The search query that was used
+  """
+  query: String!
+}
+
+"""
+The JSON scalar type represents arbitrary JSON objects
+"""
+scalar JSON

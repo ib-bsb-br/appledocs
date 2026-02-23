@@ -1,0 +1,6 @@
+*.dylib
+*.so
+*.dll
+*.png
+go.sum
+libCoreGraphicsSwift.dylib

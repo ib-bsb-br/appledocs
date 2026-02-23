@@ -1,0 +1,280 @@
+// Code generated from Apple documentation for AVFoundation. DO NOT EDIT.
+
+package avfoundation
+
+import (
+	"sync"
+	"unsafe"
+
+	"github.com/tmc/appledocs/generated/objc"
+	"github.com/tmc/appledocs/generated/objectivec"
+)
+
+
+
+
+
+// The class instance for the [CapturePhoto] class.
+var (
+	CapturePhotoClass     _CapturePhotoClass
+	CapturePhotoClassOnce sync.Once
+)
+
+func getCapturePhotoClass() _CapturePhotoClass {
+	CapturePhotoClassOnce.Do(func() {
+		CapturePhotoClass = _CapturePhotoClass{objc.GetClass("AVCapturePhoto")}
+	})
+	return CapturePhotoClass
+}
+
+type _CapturePhotoClass struct {
+	class objc.Class
+}
+
+
+
+
+
+// An interface definition for the [CapturePhoto] class.
+type ICapturePhoto interface {
+	objectivec.IObject
+	
+
+	// properties:
+	ConstantColorCenterWeightedMeanConfidenceLevel() float32
+	ConstantColorConfidenceMap() PixelBufferRef /* not a class type */
+	ConstantColorFallbackPhoto() bool
+	PhotoCount() int
+	PixelBuffer() PixelBufferRef /* not a class type */
+	ResolvedSettings() IAVCaptureResolvedPhotoSettings
+	Timestamp() objectivec.IObject
+	IsConstantColorFallbackPhoto() bool
+	SetIsConstantColorFallbackPhoto(value bool)
+	IsRawPhoto() bool
+	SetIsRawPhoto(value bool)
+
+
+	
+
+	// methods:
+	CGImageRepresentation() ImageRef /* not a class type */
+	FileDataRepresentation() foundation.Data
+
+
+}
+
+
+
+
+
+// Alloc allocates a new instance without initialization.
+func (cc _CapturePhotoClass) Alloc() CapturePhoto {
+	rv := objc.Send[CapturePhoto](objc.ID(cc.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func (cc _CapturePhotoClass) New() CapturePhoto {
+	rv := objc.Send[CapturePhoto](objc.ID(cc.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func (c_ CapturePhoto) Init() CapturePhoto {
+	rv := objc.Send[CapturePhoto](c_.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func (c_ CapturePhoto) Autorelease() CapturePhoto {
+	rv := objc.Send[CapturePhoto](c_.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// NewCapturePhoto creates a new CapturePhoto instance.
+func NewCapturePhoto() CapturePhoto {
+	return getCapturePhotoClass().New()
+}
+
+
+
+
+
+// A container for image data from a photo capture output.
+//
+// When you capture photos with the class, your delegate object receives each resulting image and related data in the form of an object. This object is an immutable wrapper from which you can retrieve various results of the photo capture. In addition to the photo image pixel buffer, an AVCapturePhoto object can also contain a preview-sized pixel buffer, capture metadata, and, on supported devices, depth data and camera calibration data. From an object, you can generate data appropriate for writing to a file, such as HEVC encoded image data containerized in the HEIC file format and including a preview image, depth data and other attachments. An instance wraps a single image result. For example, if you request a bracketed capture of three images, your callback is called three times, each time delivering a single object.
+
+
+// A container for image data from a photo capture output.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCapturePhoto
+type CapturePhoto struct {
+	objectivec.Object
+}
+
+// CapturePhotoFrom constructs a [CapturePhoto] from an unsafe.Pointer.
+//
+// A container for image data from a photo capture output.
+func CapturePhotoFrom(ptr unsafe.Pointer) CapturePhoto {
+	return CapturePhoto{objectivec.Object{objc.ID(ptr)}}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Extracts and returns the captured photo’s primary image as a Core Graphics image object.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCapturePhoto/cgImageRepresentation()
+func (c_ CapturePhoto) CGImageRepresentation() ImageRef /* not a class type */ {
+	rv := objc.Send[ImageRef](c_.ID, objc.Sel("CGImageRepresentation"))
+	return rv
+}
+
+
+// Generates and returns a flat data representation of the photo and its attachments.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCapturePhoto/fileDataRepresentation()
+func (c_ CapturePhoto) FileDataRepresentation() foundation.Data {
+	rv := objc.Send[foundation.Data](c_.ID, objc.Sel("fileDataRepresentation"))
+	return rv
+}
+
+
+
+
+
+
+
+// A score that summarizes the overall confidence level of a constant color photo.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCapturePhoto/constantColorCenterWeightedMeanConfidenceLevel
+func (c_ CapturePhoto) ConstantColorCenterWeightedMeanConfidenceLevel() float32 {
+	rv := objc.Send[float32](c_.ID, objc.Sel("constantColorCenterWeightedMeanConfidenceLevel"))
+	return rv
+}
+
+
+// A pixel buffer where each pixel value indicates how fully the system achieves the constant color effect in the corresponding region of the photo.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCapturePhoto/constantColorConfidenceMap
+func (c_ CapturePhoto) ConstantColorConfidenceMap() PixelBufferRef /* not a class type */ {
+	rv := objc.Send[PixelBufferRef](c_.ID, objc.Sel("constantColorConfidenceMap"))
+	return rv
+}
+
+
+// A Boolean value that Indicates whether this photo is a fallback photo for a constant color capture.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCapturePhoto/isConstantColorFallbackPhoto
+func (c_ CapturePhoto) ConstantColorFallbackPhoto() bool {
+	rv := objc.Send[bool](c_.ID, objc.Sel("constantColorFallbackPhoto"))
+	return rv
+}
+
+
+// The 1-based index of this photo capture relative to other results from the same capture request.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCapturePhoto/photoCount
+func (c_ CapturePhoto) PhotoCount() int {
+	rv := objc.Send[int](c_.ID, objc.Sel("photoCount"))
+	return rv
+}
+
+
+// The uncompressed or RAW image sample buffer for the photo, if requested.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCapturePhoto/pixelBuffer
+func (c_ CapturePhoto) PixelBuffer() PixelBufferRef /* not a class type */ {
+	rv := objc.Send[PixelBufferRef](c_.ID, objc.Sel("pixelBuffer"))
+	return rv
+}
+
+
+// The settings object that was used to request this photo capture.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCapturePhoto/resolvedSettings
+func (c_ CapturePhoto) ResolvedSettings() IAVCaptureResolvedPhotoSettings {
+	rv := objc.Send[CaptureResolvedPhotoSettings](c_.ID, objc.Sel("resolvedSettings"))
+	return rv
+}
+
+
+// The time at which the image was captured.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCapturePhoto/timestamp
+func (c_ CapturePhoto) Timestamp() objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](c_.ID, objc.Sel("timestamp"))
+	return rv
+}
+
+
+// A Boolean value that Indicates whether this photo is a fallback photo for a constant color capture.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/avfoundation/avcapturephoto/isconstantcolorfallbackphoto
+func (c_ CapturePhoto) IsConstantColorFallbackPhoto() bool {
+	rv := objc.Send[bool](c_.ID, objc.Sel("isConstantColorFallbackPhoto"))
+	return rv
+}
+
+
+// A Boolean value that Indicates whether this photo is a fallback photo for a constant color capture.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/avfoundation/avcapturephoto/isconstantcolorfallbackphoto
+func (c_ CapturePhoto) SetIsConstantColorFallbackPhoto(value bool) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setIsConstantColorFallbackPhoto:"), value)
+}
+
+
+// A Boolean value indicating whether this photo object contains RAW format data.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/avfoundation/avcapturephoto/israwphoto
+func (c_ CapturePhoto) IsRawPhoto() bool {
+	rv := objc.Send[bool](c_.ID, objc.Sel("isRawPhoto"))
+	return rv
+}
+
+
+// A Boolean value indicating whether this photo object contains RAW format data.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/avfoundation/avcapturephoto/israwphoto
+func (c_ CapturePhoto) SetIsRawPhoto(value bool) {
+	objc.Send[objc.ID](c_.ID, objc.Sel("setIsRawPhoto:"), value)
+}
+
+
+
+
+
+
+

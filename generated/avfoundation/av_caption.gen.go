@@ -1,0 +1,284 @@
+// Code generated from Apple documentation for AVFoundation. DO NOT EDIT.
+
+package avfoundation
+
+import (
+	"sync"
+	"unsafe"
+
+	"github.com/tmc/appledocs/generated/objc"
+	"github.com/tmc/appledocs/generated/objectivec"
+)
+
+
+
+
+
+// The class instance for the [Caption] class.
+var (
+	CaptionClass     _CaptionClass
+	CaptionClassOnce sync.Once
+)
+
+func getCaptionClass() _CaptionClass {
+	CaptionClassOnce.Do(func() {
+		CaptionClass = _CaptionClass{objc.GetClass("AVCaption")}
+	})
+	return CaptionClass
+}
+
+type _CaptionClass struct {
+	class objc.Class
+}
+
+
+
+
+
+// An interface definition for the [Caption] class.
+type ICaption interface {
+	objectivec.IObject
+	
+
+	// properties:
+	Animation() CaptionAnimation
+	Region() IAVCaptionRegion
+	Text() foundation.foundation.INSString
+	TextAlignment() CaptionTextAlignment
+	TimeRange() objectivec.IObject
+
+
+	
+
+	// methods:
+	BackgroundColorAtIndexRange(index int, outRange foundation.foundation.INSRange) ColorRef /* not a class type */
+	DecorationAtIndexRange(index int, outRange foundation.foundation.INSRange) CaptionDecoration
+	FontStyleAtIndexRange(index int, outRange foundation.foundation.INSRange) CaptionFontStyle
+	FontWeightAtIndexRange(index int, outRange foundation.foundation.INSRange) CaptionFontWeight
+	RubyAtIndexRange(index int, outRange foundation.foundation.INSRange) ICaptionRuby
+	TextColorAtIndexRange(index int, outRange foundation.foundation.INSRange) ColorRef /* not a class type */
+	TextCombineAtIndexRange(index int, outRange foundation.foundation.INSRange) CaptionTextCombine
+
+
+}
+
+
+
+
+
+// Alloc allocates a new instance without initialization.
+func (cc _CaptionClass) Alloc() Caption {
+	rv := objc.Send[Caption](objc.ID(cc.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func (cc _CaptionClass) New() Caption {
+	rv := objc.Send[Caption](objc.ID(cc.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func (c_ Caption) Init() Caption {
+	rv := objc.Send[Caption](c_.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func (c_ Caption) Autorelease() Caption {
+	rv := objc.Send[Caption](c_.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// NewCaption creates a new Caption instance.
+func NewCaption() Caption {
+	return getCaptionClass().New()
+}
+
+
+
+
+
+// An object that represents text to present over a time range.
+//
+// A caption contains a cue, which is a single sentence or paragraph of text for a time range in the video timeline. Within the active range, the caption may animate (for example, Karaoke lyrics) by rolling-up, changing visibility, or using other dynamic styling.
+
+
+// An object that represents text to present over a time range.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption
+type Caption struct {
+	objectivec.Object
+}
+
+// CaptionFrom constructs a [Caption] from an unsafe.Pointer.
+//
+// An object that represents text to present over a time range.
+func CaptionFrom(ptr unsafe.Pointer) Caption {
+	return Caption{objectivec.Object{objc.ID(ptr)}}
+}
+
+
+
+
+
+
+// Creates a caption that contains text and a time range.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption/init(_:timeRange:)
+func NewCaptionWithTextTimeRange(text foundation.foundation.INSString, timeRange objectivec.IObject) Caption {
+	instance := getCaptionClass().Alloc()
+	rv := objc.Send[Caption](instance.ID, objc.Sel("initWithText:timeRange:"), text, timeRange)
+	rv.Autorelease()
+	return rv
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Returns the background color at the index position.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption/backgroundColorAtIndex:range:
+func (c_ Caption) BackgroundColorAtIndexRange(index int, outRange foundation.foundation.INSRange) ColorRef /* not a class type */ {
+	rv := objc.Send[ColorRef](c_.ID, objc.Sel("backgroundColorAtIndex:range:"), index, outRange)
+	return rv
+}
+
+
+// Returns the text decoration at the index position.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption/decorationAtIndex:range:
+func (c_ Caption) DecorationAtIndexRange(index int, outRange foundation.foundation.INSRange) CaptionDecoration {
+	rv := objc.Send[CaptionDecoration](c_.ID, objc.Sel("decorationAtIndex:range:"), index, outRange)
+	return rv
+}
+
+
+// Returns the font style and range at the index position.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption/fontStyleAtIndex:range:
+func (c_ Caption) FontStyleAtIndexRange(index int, outRange foundation.foundation.INSRange) CaptionFontStyle {
+	rv := objc.Send[CaptionFontStyle](c_.ID, objc.Sel("fontStyleAtIndex:range:"), index, outRange)
+	return rv
+}
+
+
+// Returns the font weight and range at the index position.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption/fontWeightAtIndex:range:
+func (c_ Caption) FontWeightAtIndexRange(index int, outRange foundation.foundation.INSRange) CaptionFontWeight {
+	rv := objc.Send[CaptionFontWeight](c_.ID, objc.Sel("fontWeightAtIndex:range:"), index, outRange)
+	return rv
+}
+
+
+// Returns the ruby text at the index position.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption/rubyAtIndex:range:
+func (c_ Caption) RubyAtIndexRange(index int, outRange foundation.foundation.INSRange) ICaptionRuby {
+	rv := objc.Send[CaptionRuby](c_.ID, objc.Sel("rubyAtIndex:range:"), index, outRange)
+	return rv
+}
+
+
+// Returns the text color at the index position.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption/textColorAtIndex:range:
+func (c_ Caption) TextColorAtIndexRange(index int, outRange foundation.foundation.INSRange) ColorRef /* not a class type */ {
+	rv := objc.Send[ColorRef](c_.ID, objc.Sel("textColorAtIndex:range:"), index, outRange)
+	return rv
+}
+
+
+// Returns the text combine at the index position.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption/textCombineAtIndex:range:
+func (c_ Caption) TextCombineAtIndexRange(index int, outRange foundation.foundation.INSRange) CaptionTextCombine {
+	rv := objc.Send[CaptionTextCombine](c_.ID, objc.Sel("textCombineAtIndex:range:"), index, outRange)
+	return rv
+}
+
+
+
+
+
+
+
+// The animation that the system applies to this caption.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption/animation-swift.property
+func (c_ Caption) Animation() CaptionAnimation {
+	rv := objc.Send[CaptionAnimation](c_.ID, objc.Sel("animation"))
+	return rv
+}
+
+
+// The region in which the caption exists.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption/region
+func (c_ Caption) Region() IAVCaptionRegion {
+	rv := objc.Send[CaptionRegion](c_.ID, objc.Sel("region"))
+	return rv
+}
+
+
+// The caption text.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption/text
+func (c_ Caption) Text() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](c_.ID, objc.Sel("text"))
+	return rv
+}
+
+
+// The alignment for the caption text.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption/textAlignment-swift.property
+func (c_ Caption) TextAlignment() CaptionTextAlignment {
+	rv := objc.Send[CaptionTextAlignment](c_.ID, objc.Sel("textAlignment"))
+	return rv
+}
+
+
+// The time range over which the system presents the caption.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVCaption/timeRange
+func (c_ Caption) TimeRange() objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](c_.ID, objc.Sel("timeRange"))
+	return rv
+}
+
+
+
+
+
+
+

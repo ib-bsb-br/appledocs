@@ -1,0 +1,430 @@
+// Code generated from Apple documentation for AVFoundation. DO NOT EDIT.
+
+package avfoundation
+
+import (
+	"sync"
+	"unsafe"
+
+	"github.com/tmc/appledocs/generated/objc"
+	"github.com/tmc/appledocs/generated/objectivec"
+)
+
+
+
+
+
+// The class instance for the [PlayerInterstitialEvent] class.
+var (
+	PlayerInterstitialEventClass     _PlayerInterstitialEventClass
+	PlayerInterstitialEventClassOnce sync.Once
+)
+
+func getPlayerInterstitialEventClass() _PlayerInterstitialEventClass {
+	PlayerInterstitialEventClassOnce.Do(func() {
+		PlayerInterstitialEventClass = _PlayerInterstitialEventClass{objc.GetClass("AVPlayerInterstitialEvent")}
+	})
+	return PlayerInterstitialEventClass
+}
+
+type _PlayerInterstitialEventClass struct {
+	class objc.Class
+}
+
+
+
+
+
+// An interface definition for the [PlayerInterstitialEvent] class.
+type IPlayerInterstitialEvent interface {
+	objectivec.IObject
+	
+
+	// properties:
+	AlignsResumptionWithPrimarySegmentBoundary() bool
+	AlignsStartWithPrimarySegmentBoundary() bool
+	AssetListResponse() foundation.foundation.INSDictionary
+	ContentMayVary() bool
+	Cue() PlayerInterstitialEventCue
+	Date() foundation.foundation.INSDate
+	Identifier() foundation.foundation.INSString
+	PlannedDuration() objectivec.IObject
+	SetPlannedDuration(value objectivec.IObject)
+	PlayoutLimit() objectivec.IObject
+	PrimaryItem() IAVPlayerItem
+	Restrictions() PlayerInterstitialEventRestrictions
+	ResumptionOffset() objectivec.IObject
+	SkipControlLocalizedLabelBundleKey() foundation.foundation.INSString
+	SkipControlTimeRange() objectivec.IObject
+	SupplementsPrimaryContent() bool
+	TemplateItems() []PlayerItem
+	Time() objectivec.IObject
+	TimelineOccupancy() PlayerInterstitialEventTimelineOccupancy
+	UserDefinedAttributes() foundation.foundation.INSDictionary
+	WillPlayOnce() bool
+
+
+	
+
+	// methods:
+
+
+}
+
+
+
+
+
+// Alloc allocates a new instance without initialization.
+func (pc _PlayerInterstitialEventClass) Alloc() PlayerInterstitialEvent {
+	rv := objc.Send[PlayerInterstitialEvent](objc.ID(pc.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func (pc _PlayerInterstitialEventClass) New() PlayerInterstitialEvent {
+	rv := objc.Send[PlayerInterstitialEvent](objc.ID(pc.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func (p_ PlayerInterstitialEvent) Init() PlayerInterstitialEvent {
+	rv := objc.Send[PlayerInterstitialEvent](p_.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func (p_ PlayerInterstitialEvent) Autorelease() PlayerInterstitialEvent {
+	rv := objc.Send[PlayerInterstitialEvent](p_.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// NewPlayerInterstitialEvent creates a new PlayerInterstitialEvent instance.
+func NewPlayerInterstitialEvent() PlayerInterstitialEvent {
+	return getPlayerInterstitialEventClass().New()
+}
+
+
+
+
+
+// An object that provides instructions for how a player presents interstitial content.
+//
+// An interstitial event defines a or , on the timeline of its , at which playback of interstitial content begins. It specifies the alternative interstitial content to play as an array of one or more template player items. The system uses the configuration of the event’s to build new player item instances to present the interstitial content. Use to observe the scheduling and progress of interstitial events. If your app requires specifying the schedule of interstitial events, use instead.
+
+
+// An object that provides instructions for how a player presents interstitial content.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent
+type PlayerInterstitialEvent struct {
+	objectivec.Object
+}
+
+// PlayerInterstitialEventFrom constructs a [PlayerInterstitialEvent] from an unsafe.Pointer.
+//
+// An object that provides instructions for how a player presents interstitial content.
+func PlayerInterstitialEventFrom(ptr unsafe.Pointer) PlayerInterstitialEvent {
+	return PlayerInterstitialEvent{objectivec.Object{objc.ID(ptr)}}
+}
+
+
+
+
+
+
+// Creates an interstitial event for the specified date.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/init(primaryItem:date:)
+func NewPlayerInterstitialEventWithPrimaryItemDate(primaryItem IAVPlayerItem, date foundation.foundation.INSDate) PlayerInterstitialEvent {
+	rv := objc.Send[PlayerInterstitialEvent](objc.ID(getPlayerInterstitialEventClass().class), objc.Sel("interstitialEventWithPrimaryItem:date:"), primaryItem, date)
+	return rv
+}
+
+
+// Creates an interstitial event for the specified time.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/init(primaryItem:time:)
+func NewPlayerInterstitialEventWithPrimaryItemTime(primaryItem IAVPlayerItem, time objectivec.IObject) PlayerInterstitialEvent {
+	rv := objc.Send[PlayerInterstitialEvent](objc.ID(getPlayerInterstitialEventClass().class), objc.Sel("interstitialEventWithPrimaryItem:time:"), primaryItem, time)
+	return rv
+}
+
+
+
+
+
+
+
+// Creates an interstitial event for the specified date.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/init(primaryItem:date:)
+func (pc _PlayerInterstitialEventClass) InterstitialEventWithPrimaryItemDate(primaryItem IAVPlayerItem, date foundation.foundation.INSDate) objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](objc.ID(pc.class), objc.Sel("interstitialEventWithPrimaryItem:date:"), primaryItem, date)
+	return rv
+}
+
+
+// Creates an interstitial event for the specified time.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/init(primaryItem:time:)
+func (pc _PlayerInterstitialEventClass) InterstitialEventWithPrimaryItemTime(primaryItem IAVPlayerItem, time objectivec.IObject) objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](objc.ID(pc.class), objc.Sel("interstitialEventWithPrimaryItem:time:"), primaryItem, time)
+	return rv
+}
+
+
+// Creates an interstitial event, with user-defined attributes, for the specified date.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/interstitialEventWithPrimaryItem:identifier:date:templateItems:restrictions:resumptionOffset:playoutLimit:userDefinedAttributes:
+func (pc _PlayerInterstitialEventClass) InterstitialEventWithPrimaryItemIdentifierDateTemplateItemsRestrictionsResumptionOffsetPlayoutLimitUserDefinedAttributes(primaryItem IAVPlayerItem, identifier foundation.foundation.INSString, date foundation.foundation.INSDate, templateItems []PlayerItem, restrictions PlayerInterstitialEventRestrictions, resumptionOffset objectivec.IObject, playoutLimit objectivec.IObject, userDefinedAttributes foundation.foundation.INSDictionary) objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](objc.ID(pc.class), objc.Sel("interstitialEventWithPrimaryItem:identifier:date:templateItems:restrictions:resumptionOffset:playoutLimit:userDefinedAttributes:"), primaryItem, identifier, date, templateItems, restrictions, resumptionOffset, playoutLimit, userDefinedAttributes)
+	return rv
+}
+
+
+// Creates an interstitial event, with user-defined attributes, for the specified time.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/interstitialEventWithPrimaryItem:identifier:time:templateItems:restrictions:resumptionOffset:playoutLimit:userDefinedAttributes:
+func (pc _PlayerInterstitialEventClass) InterstitialEventWithPrimaryItemIdentifierTimeTemplateItemsRestrictionsResumptionOffsetPlayoutLimitUserDefinedAttributes(primaryItem IAVPlayerItem, identifier foundation.foundation.INSString, time objectivec.IObject, templateItems []PlayerItem, restrictions PlayerInterstitialEventRestrictions, resumptionOffset objectivec.IObject, playoutLimit objectivec.IObject, userDefinedAttributes foundation.foundation.INSDictionary) objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](objc.ID(pc.class), objc.Sel("interstitialEventWithPrimaryItem:identifier:time:templateItems:restrictions:resumptionOffset:playoutLimit:userDefinedAttributes:"), primaryItem, identifier, time, templateItems, restrictions, resumptionOffset, playoutLimit, userDefinedAttributes)
+	return rv
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// A Boolean value that indicates whether the resumption time of primary playback should snap to a segment boundary of the primary asset.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/alignsResumptionWithPrimarySegmentBoundary
+func (p_ PlayerInterstitialEvent) AlignsResumptionWithPrimarySegmentBoundary() bool {
+	rv := objc.Send[bool](p_.ID, objc.Sel("alignsResumptionWithPrimarySegmentBoundary"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether the start time of interstitial playback should snap to a segment boundary of the primary asset.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/alignsStartWithPrimarySegmentBoundary
+func (p_ PlayerInterstitialEvent) AlignsStartWithPrimarySegmentBoundary() bool {
+	rv := objc.Send[bool](p_.ID, objc.Sel("alignsStartWithPrimarySegmentBoundary"))
+	return rv
+}
+
+
+// The asset list JSON response as a dictionary.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/assetListResponse
+func (p_ PlayerInterstitialEvent) AssetListResponse() foundation.foundation.INSDictionary {
+	rv := objc.Send[foundation.NSDictionary](p_.ID, objc.Sel("assetListResponse"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether an event’s content is dynamic and the server may respond with different interstitial assets for other participants in a coordinated playback session.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/contentMayVary
+func (p_ PlayerInterstitialEvent) ContentMayVary() bool {
+	rv := objc.Send[bool](p_.ID, objc.Sel("contentMayVary"))
+	return rv
+}
+
+
+// A cue to schedule interstitial event playback at a predefined position during primary playback.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/cue-swift.property
+func (p_ PlayerInterstitialEvent) Cue() PlayerInterstitialEventCue {
+	rv := objc.Send[PlayerInterstitialEventCue](p_.ID, objc.Sel("cue"))
+	return rv
+}
+
+
+// A date within the date range of the primary content that playback of interstitial content begins.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/date
+func (p_ PlayerInterstitialEvent) Date() foundation.foundation.INSDate {
+	rv := objc.Send[foundation.NSDate](p_.ID, objc.Sel("date"))
+	return rv
+}
+
+
+// An identifier for the event.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/identifier
+func (p_ PlayerInterstitialEvent) Identifier() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](p_.ID, objc.Sel("identifier"))
+	return rv
+}
+
+
+// The planned duration of the event.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/plannedDuration
+func (p_ PlayerInterstitialEvent) PlannedDuration() objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](p_.ID, objc.Sel("plannedDuration"))
+	return rv
+}
+
+
+// The planned duration of the event.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/plannedDuration
+func (p_ PlayerInterstitialEvent) SetPlannedDuration(value objectivec.IObject) {
+	objc.Send[objc.ID](p_.ID, objc.Sel("setPlannedDuration:"), value)
+}
+
+
+// The time offset at which playback of the interstitial ends.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/playoutLimit
+func (p_ PlayerInterstitialEvent) PlayoutLimit() objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](p_.ID, objc.Sel("playoutLimit"))
+	return rv
+}
+
+
+// The player item that represents the primary content.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/primaryItem
+func (p_ PlayerInterstitialEvent) PrimaryItem() IAVPlayerItem {
+	rv := objc.Send[PlayerItem](p_.ID, objc.Sel("primaryItem"))
+	return rv
+}
+
+
+// The restrictions the event imposes on the playback of interstitial content.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/restrictions-swift.property
+func (p_ PlayerInterstitialEvent) Restrictions() PlayerInterstitialEventRestrictions {
+	rv := objc.Send[PlayerInterstitialEventRestrictions](p_.ID, objc.Sel("restrictions"))
+	return rv
+}
+
+
+// A time offset at which playback of primary content resumes after interstitial content finishes.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/resumptionOffset
+func (p_ PlayerInterstitialEvent) ResumptionOffset() objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](p_.ID, objc.Sel("resumptionOffset"))
+	return rv
+}
+
+
+// The key defined in the AVPlayerInterstitialEventController’s localizedStringsBundle that points to the localized label for the skip button.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/skipControlLocalizedLabelBundleKey
+func (p_ PlayerInterstitialEvent) SkipControlLocalizedLabelBundleKey() foundation.foundation.INSString {
+	rv := objc.Send[foundation.NSString](p_.ID, objc.Sel("skipControlLocalizedLabelBundleKey"))
+	return rv
+}
+
+
+// The time range within the duration of the interstitial event for which a skip button should be displayed.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/skipControlTimeRange
+func (p_ PlayerInterstitialEvent) SkipControlTimeRange() objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](p_.ID, objc.Sel("skipControlTimeRange"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether an event supplements the primary content and should present with the primary item.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/supplementsPrimaryContent
+func (p_ PlayerInterstitialEvent) SupplementsPrimaryContent() bool {
+	rv := objc.Send[bool](p_.ID, objc.Sel("supplementsPrimaryContent"))
+	return rv
+}
+
+
+// An array of player item configurations to use as templates for player items that play interstitial content.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/templateItems
+func (p_ PlayerInterstitialEvent) TemplateItems() []PlayerItem {
+	rv := objc.Send[[]PlayerItem](p_.ID, objc.Sel("templateItems"))
+	return rv
+}
+
+
+// A time within the timeline of the primary content that playback of interstitial content begins.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/time
+func (p_ PlayerInterstitialEvent) Time() objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](p_.ID, objc.Sel("time"))
+	return rv
+}
+
+
+// An event’s occupancy on the integrated timeline.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/timelineOccupancy-swift.property
+func (p_ PlayerInterstitialEvent) TimelineOccupancy() PlayerInterstitialEventTimelineOccupancy {
+	rv := objc.Send[PlayerInterstitialEventTimelineOccupancy](p_.ID, objc.Sel("timelineOccupancy"))
+	return rv
+}
+
+
+// Attributes of the event that the vendor or app defines.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/userDefinedAttributes
+func (p_ PlayerInterstitialEvent) UserDefinedAttributes() foundation.foundation.INSDictionary {
+	rv := objc.Send[foundation.NSDictionary](p_.ID, objc.Sel("userDefinedAttributes"))
+	return rv
+}
+
+
+// A Boolean value that indicates whether to schedule this event one time only and suppress subsequent replay.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerInterstitialEvent/willPlayOnce
+func (p_ PlayerInterstitialEvent) WillPlayOnce() bool {
+	rv := objc.Send[bool](p_.ID, objc.Sel("willPlayOnce"))
+	return rv
+}
+
+
+
+
+
+
+

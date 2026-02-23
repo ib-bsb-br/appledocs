@@ -1,0 +1,55 @@
+# Claude Code local settings
+**/.claude/settings.local.json
+
+# Build artifacts
+/appledocs
+*.test
+*.out
+
+# Cache and output directories
+.cache/
+output/
+markdown/
+markdown-test/
+
+# Coverage reports
+coverage.html
+coverage.out
+*.prof
+
+# Temporary files
+*.tmp
+*.swp
+*~
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Test binaries
+cmd/appledocs/appledocs
+cmd/appledocs-gql/appledocs-gql
+cmd/generate-framework-bindings/generate-framework-bindings
+types/types_generated.go
+examples/*/examples
+examples/*/*.exe
+examples/*/main
+examples/*/helloworld-*[!.go]
+# Ignore compiled binaries in examples
+# Pattern: ignore binaries with same name as framework (fskit/fskit, createml/createml, etc)
+examples/appkit/appkit
+examples/contactsui/contactsui
+examples/coregraphics/coregraphics
+examples/coreimage/coreimage
+examples/coretext/coretext
+examples/createml/createml
+examples/createmlcomponents/createmlcomponents
+examples/foundation/foundation
+examples/fskit/fskit
+examples/metal/metal
+examples/paravirtualizedgraphics/paravirtualizedgraphics
+examples/uniformtypeidentifiers/uniformtypeidentifiers
+# Specific binaries in subdirectories
+examples/coregraphics/basic-transforms/coregraphics-transforms
+examples/coregraphics/basic-transforms/basic-transforms

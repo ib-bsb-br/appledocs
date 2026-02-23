@@ -1,0 +1,206 @@
+// Code generated from Apple documentation for AVFoundation. DO NOT EDIT.
+
+package avfoundation
+
+import (
+	"sync"
+	"unsafe"
+
+	"github.com/tmc/appledocs/generated/objc"
+	"github.com/tmc/appledocs/generated/objectivec"
+)
+
+
+
+
+
+// The class instance for the [PlayerItemVideoOutput] class.
+var (
+	PlayerItemVideoOutputClass     _PlayerItemVideoOutputClass
+	PlayerItemVideoOutputClassOnce sync.Once
+)
+
+func getPlayerItemVideoOutputClass() _PlayerItemVideoOutputClass {
+	PlayerItemVideoOutputClassOnce.Do(func() {
+		PlayerItemVideoOutputClass = _PlayerItemVideoOutputClass{objc.GetClass("AVPlayerItemVideoOutput")}
+	})
+	return PlayerItemVideoOutputClass
+}
+
+type _PlayerItemVideoOutputClass struct {
+	class objc.Class
+}
+
+
+
+
+
+// An interface definition for the [PlayerItemVideoOutput] class.
+type IPlayerItemVideoOutput interface {
+	IPlayerItemOutput
+	
+
+	// properties:
+	DelegateQueue() objectivec.IObject
+
+
+	
+
+	// methods:
+	HasNewPixelBufferForItemTime(itemTime objectivec.IObject) bool
+	RequestNotificationOfMediaDataChangeWithAdvanceInterval(interval float64)
+	SetDelegateQueue(delegate unsafe.Pointer, delegateQueue objectivec.IObject)
+
+
+}
+
+
+
+
+
+// Alloc allocates a new instance without initialization.
+func (pc _PlayerItemVideoOutputClass) Alloc() PlayerItemVideoOutput {
+	rv := objc.Send[PlayerItemVideoOutput](objc.ID(pc.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func (pc _PlayerItemVideoOutputClass) New() PlayerItemVideoOutput {
+	rv := objc.Send[PlayerItemVideoOutput](objc.ID(pc.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func (p_ PlayerItemVideoOutput) Init() PlayerItemVideoOutput {
+	rv := objc.Send[PlayerItemVideoOutput](p_.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func (p_ PlayerItemVideoOutput) Autorelease() PlayerItemVideoOutput {
+	rv := objc.Send[PlayerItemVideoOutput](p_.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// NewPlayerItemVideoOutput creates a new PlayerItemVideoOutput instance.
+func NewPlayerItemVideoOutput() PlayerItemVideoOutput {
+	return getPlayerItemVideoOutputClass().New()
+}
+
+
+
+
+
+// An object that outputs video frames from a player item.
+
+
+// An object that outputs video frames from a player item.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerItemVideoOutput
+type PlayerItemVideoOutput struct {
+	PlayerItemOutput
+}
+
+// PlayerItemVideoOutputFrom constructs a [PlayerItemVideoOutput] from an unsafe.Pointer.
+//
+// An object that outputs video frames from a player item.
+func PlayerItemVideoOutputFrom(ptr unsafe.Pointer) PlayerItemVideoOutput {
+	return PlayerItemVideoOutput{
+		PlayerItemOutput: PlayerItemOutputFrom(ptr),
+	}
+}
+
+
+
+
+
+
+// Creates a video output object initialized with the specified output settings.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerItemVideoOutput/init(outputSettings:)
+func NewPlayerItemVideoOutputWithOutputSettings(outputSettings foundation.IDictionary) PlayerItemVideoOutput {
+	instance := getPlayerItemVideoOutputClass().Alloc()
+	rv := objc.Send[PlayerItemVideoOutput](instance.ID, objc.Sel("initWithOutputSettings:"), outputSettings)
+	rv.Autorelease()
+	return rv
+}
+
+
+// Creates a video output object using the specified pixel buffer attributes.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerItemVideoOutput/init(pixelBufferAttributes:)-7n7v8
+func NewPlayerItemVideoOutputWithPixelBufferAttributes(pixelBufferAttributes foundation.IDictionary) PlayerItemVideoOutput {
+	instance := getPlayerItemVideoOutputClass().Alloc()
+	rv := objc.Send[PlayerItemVideoOutput](instance.ID, objc.Sel("initWithPixelBufferAttributes:"), pixelBufferAttributes)
+	rv.Autorelease()
+	return rv
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Returns a Boolean value that indicates whether video output is available for the specified item time.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerItemVideoOutput/hasNewPixelBuffer(forItemTime:)
+func (p_ PlayerItemVideoOutput) HasNewPixelBufferForItemTime(itemTime objectivec.IObject) bool {
+	rv := objc.Send[bool](p_.ID, objc.Sel("hasNewPixelBufferForItemTime:"), itemTime)
+	return rv
+}
+
+
+// Tells the receiver that the video out put client is entering a quiescent state.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerItemVideoOutput/requestNotificationOfMediaDataChange(withAdvanceInterval:)
+func (p_ PlayerItemVideoOutput) RequestNotificationOfMediaDataChangeWithAdvanceInterval(interval float64) {
+	objc.Send[objc.ID](p_.ID, objc.Sel("requestNotificationOfMediaDataChangeWithAdvanceInterval:"), interval)
+}
+
+
+// Sets the delegate and dispatch queue for the receiver.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerItemVideoOutput/setDelegate(_:queue:)
+func (p_ PlayerItemVideoOutput) SetDelegateQueue(delegate unsafe.Pointer, delegateQueue objectivec.IObject) {
+	objc.Send[objc.ID](p_.ID, objc.Sel("setDelegate:queue:"), delegate, delegateQueue)
+}
+
+
+
+
+
+
+
+// The dispatch queue on which to call delegate methods.
+//
+// [Full Topic]
+// [Full Topic]: https://developer.apple.com/documentation/AVFoundation/AVPlayerItemVideoOutput/delegateQueue
+func (p_ PlayerItemVideoOutput) DelegateQueue() objectivec.IObject {
+	rv := objc.Send[objectivec.IObject](p_.ID, objc.Sel("delegateQueue"))
+	return rv
+}
+
+
+
+
+
+
+

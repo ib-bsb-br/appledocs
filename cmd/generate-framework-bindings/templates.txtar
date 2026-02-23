@@ -1,0 +1,1651 @@
+# Code generation templates for Apple framework bindings
+# These templates use occ2go helpers via FuncMap for type mapping and parameter processing
+
+-- module --
+# Generated bindings for {{.Framework}} framework
+# Package: {{.PackageName}}
+#
+# Functions: {{.FunctionCount}}
+# Classes: {{.ClassCount}}
+# Protocols: {{.ProtocolCount}}
+
+#-- generate.go --
+{{template "generate.go" .}}
+
+#-- doc.gen.go --
+
+{{template "doc.gen.go" .}}
+#-- types.gen.go --
+{{template "types.gen.go" .}}
+
+{{- $undefinedTypes := .GetUndefinedTypesForTemplate}}
+{{if gt (len $undefinedTypes) 0 -}}
+#-- undefined_types.gen.go --
+{{template "undefined_types.gen.go" .}}
+{{end -}}
+
+{{if gt .EnumCount 0 -}}
+#-- enums.gen.go --
+{{template "enums.gen.go" .}}
+{{end -}}
+
+{{if gt .TypedefCount 0 -}}
+#-- typedefs.gen.go --
+{{template "typedefs.gen.go" .}}
+{{end -}}
+
+{{if gt .ConstantCount 0 -}}
+#-- constants.gen.go --
+{{template "constants.gen.go" .}}
+{{end -}}
+
+#-- functions.gen.go --
+{{template "functions.gen.go" .}}
+
+{{if or (gt .ClassCount 0) (gt .FunctionCount 0) .GenerateTests .GenerateExamples -}}
+#-- main_test.go --
+{{template "main_test.go" .}}
+{{end -}}
+
+{{if .WithRefMethods -}}
+#-- methods.gen.go --
+{{template "methods.gen.go" .}}
+{{end -}}
+
+{{if gt .ClassCount 0 -}}
+{{- range .Classes}}
+#-- {{classFileName .Name}} --
+{{template "class.gen.go" (dict "Generator" $ "Class" . "Framework" $.Framework "PackageName" $.PackageName "OutputModule" $.OutputModule)}}
+{{if hasIOSOnlyMethods . -}}
+#-- {{classIOSFileName .Name}} --
+{{template "class_ios.gen.go" (dict "Generator" $ "Class" . "Framework" $.Framework "PackageName" $.PackageName "OutputModule" $.OutputModule)}}
+{{end -}}
+{{if and (classHasInit .Methods) (not (shouldExcludeTestExample $.Framework .Name)) -}}
+#-- {{classTestFileName .Name}} --
+{{template "class.gen_test.go" (dict "Generator" $ "Class" . "Framework" $.Framework "PackageName" $.PackageName "OutputModule" $.OutputModule)}}{{end}}{{end}}{{end}}
+
+{{if gt .ProtocolCount 0 -}}
+{{- range .Protocols}}
+#-- {{protocolFileName .Name}} --
+{{template "protocol.gen.go" (dict "Generator" $ "Protocol" . "Framework" $.Framework "PackageName" $.PackageName "OutputModule" $.OutputModule)}}
+
+#-- {{protocolInterfaceFileName .Name}} --
+{{template "protocol_interface.gen.go" (dict "Generator" $ "Protocol" . "Framework" $.Framework "PackageName" $.PackageName "OutputModule" $.OutputModule)}}{{end}}{{end}}
+
+{{if .GenerateTests -}}
+#-- functions.gen_test.go --
+{{template "functions.gen_test.go" .}}
+{{end -}}
+
+{{if .GenerateExamples -}}
+#-- examples_test.gen.go --
+{{template "examples_test.gen.go" .}}
+{{end -}}
+
+-- _doc_comment.tmpl --
+{{/* Reusable template for documentation comments with [Full Topic] links */}}
+{{define "doc_comment"}}
+{{- if .Abstract}}
+// {{commentLine .Abstract}}{{if not .DocURL}} [Full Topic]{{end}}
+{{- end}}
+{{- if .DocURL}}
+{{if .Abstract}}//
+{{end}}// [Full Topic]
+// [Full Topic]: {{convertDocURL .DocURL}}
+{{- end -}}
+{{end}}
+
+-- generate.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+//go:generate rm -f *.gen.go *.gen_test.go
+//go:generate go run github.com/tmc/appledocs/cmd/generate-framework-bindings -framework ^{{.Framework}}${{if .Variant}} -variant {{.Variant}}{{end}}{{if .WithRefMethods}} -with-ref-methods{{end}} -output ..
+
+-- doc.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+{{if .Abstract -}}
+// Package {{.PackageName}} provides Go bindings for the {{.Framework}} framework.
+//
+// {{.Abstract}}
+//
+{{else -}}
+// Package {{.PackageName}} provides Go bindings for the {{.Framework}} framework.
+//
+{{end -}}
+// These bindings are generated from Apple's official documentation and
+// provide purego-based access to {{.Framework}} without requiring cgo.
+{{if .DocURL -}}
+//
+// See: {{convertDocURL .DocURL}}
+{{end -}}
+package {{.PackageName}}
+
+import (
+	"github.com/ebitengine/purego"
+)
+
+// frameworkPath is the system path to the framework binary.
+{{if eq .Framework "ObjectiveC" -}}
+const frameworkPath = "/usr/lib/libobjc.dylib"
+{{else -}}
+const frameworkPath = "/System/Library/Frameworks/{{.Framework}}.framework/{{.Framework}}"
+{{end -}}
+func init() {
+	_, err := purego.Dlopen(frameworkPath, purego.RTLD_LAZY|purego.RTLD_GLOBAL)
+	if err != nil {
+		panic(err)
+	}
+}
+-- types.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+{{- $needsUnsafe := or .WithRefMethods (gt (len .RefTypes) 0) (structsUseUnsafe .Structs .Framework)}}
+{{- $needsObjc := structsUseObjc .Structs .Framework}}
+{{- $crossFrameworkImports := getStructCrossFrameworkImports .Structs .Framework .OutputModule}}
+{{- if or $needsUnsafe $needsObjc (gt (len $crossFrameworkImports) 0)}}
+import (
+{{- if $needsUnsafe}}
+	"unsafe"
+{{- end}}
+{{- if $needsObjc}}
+	"github.com/ebitengine/purego/objc"
+{{- end}}
+{{- range $pkg, $path := $crossFrameworkImports}}
+
+	"{{$path}}"
+{{- end}}
+)
+
+{{- end}}
+{{if .WithRefMethods -}}
+{{range .RefTypes -}}
+// {{.}} is a CoreGraphics opaque type.
+//
+// The underlying representation is unsafe.Pointer, wrapped to allow methods.
+type {{.}} struct {
+	p unsafe.Pointer
+}
+
+// To{{.}} converts an unsafe.Pointer to {{.}}.
+func To{{.}}(p unsafe.Pointer) {{.}} {
+	return {{.}}{p: p}
+}
+
+// Ptr returns the underlying unsafe.Pointer.
+func (ref {{.}}) Ptr() unsafe.Pointer {
+	return ref.p
+}
+
+{{end}}
+{{end}}
+
+{{if gt (len .Structs) 0 -}}
+// C struct types
+{{range .Structs -}}
+// {{.Name}}{{if .Abstract}} - {{.Abstract}}{{end}}
+{{if .DocURL -}}
+//
+// [Full Topic]
+// [Full Topic]: {{convertDocURL .DocURL}}
+{{end -}}
+type {{.Name}} struct {
+{{- range .Fields}}
+	{{.Name}} {{mapCTypeToGo .Type $.Framework}}{{if .Comment}} // {{.Comment}}{{end}}
+{{- end}}
+}{{debug "types.gen.go/struct" .Name }}
+
+{{if hasPrefix .Name "NS" -}}
+{{$strippedName := trimPrefix .Name "NS" -}}
+// {{$strippedName}} is a type alias for {{.Name}} for use in objc.Send[T] calls.
+type {{$strippedName}} = {{.Name}}
+
+{{end -}}
+{{end}}
+{{end}}
+
+-- undefined_types.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+{{- $undefinedTypes := .GetUndefinedTypesForTemplate}}
+
+// _undefined is the base type for all undefined types referenced in documentation
+// but not defined. These types are typically enums, options, or type aliases that
+// weren't extracted from the documentation.
+type _undefined = int
+
+// Undefined types - referenced but not defined in documentation
+type (
+{{- range $undefinedTypes}}
+	{{.Name}} = _undefined // referenced in {{.Framework}}
+{{- end}}
+)
+
+-- functions.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+{{debug "functions.gen.go" "Generating %d functions for %s" (len .Functions) .Framework}}
+{{if gt (len .Functions) 0 -}}
+{{- $funcImports := getFunctionRequiredImports .Functions .Framework -}}
+{{- $sortedImports := sortedImportPaths $funcImports -}}
+import (
+	"unsafe"
+
+	"github.com/ebitengine/purego"
+{{- range $sortedImports}}
+	{{.PackageName}} "{{.ImportPath}}"
+{{- end}}
+)
+{{else -}}
+import (
+	"github.com/ebitengine/purego"
+)
+{{end}}
+
+// {{.Framework}} Functions ({{.Count}} total)
+//
+// Type-safe package-level functions with graceful error handling.
+// Missing symbols are silently ignored during init; functions will panic when called if unavailable.
+
+{{if gt (len .Functions) 0 -}}
+var (
+{{- range .Functions}}
+{{- $params := prepareParams .Parameters $.Framework}}
+{{- $returnType := mapCTypeToGo .ReturnType $.Framework}}
+	_{{.Name}} func({{range $i, $p := $params}}{{if $i}}, {{end}}{{$p.Type}}{{end}}){{if $returnType}} {{$returnType}}{{end}}
+{{- end}}
+)
+
+func init() {
+	lib, err := purego.Dlopen(frameworkPath, purego.RTLD_LAZY|purego.RTLD_GLOBAL)
+	if err != nil {
+		panic(err)
+	}
+{{- range .Functions}}
+	tryRegister(&_{{.Name}}, lib, "{{.Name}}")
+{{- end}}
+}
+
+// tryRegister attempts to register a function, silently ignoring failures.
+// This allows the library to load even if some symbols are missing.
+func tryRegister(fn interface{}, lib uintptr, name string) {
+	defer func() {
+		if r := recover(); r != nil {
+			// Symbol not found - function will remain nil and panic when called
+			// This is expected for inline functions, macros, or version-specific APIs
+		}
+	}()
+	purego.RegisterLibFunc(fn, lib, name)
+}
+{{else -}}
+func init() {
+	// Framework has no exported C functions, only classes/protocols
+	lib, err := purego.Dlopen(frameworkPath, purego.RTLD_LAZY|purego.RTLD_GLOBAL)
+	if err != nil {
+		panic(err)
+	}
+	_ = lib // Suppress unused variable warning
+}
+{{end}}
+
+{{range .Functions -}}
+{{- $docData := prepareFunctionDocData . $.Framework}}
+{{if $docData.Abstract}}// {{commentLine $docData.Abstract}}{{if not $docData.DocURL}} [Full Topic]{{end}}{{else}}// {{$docData.Name}} is a {{$docData.Framework}} function.{{if not $docData.DocURL}} [Full Topic]{{end}}{{end}}
+{{if $docData.HasAvailability -}}
+//
+{{if $docData.IsDeprecated -}}
+// Deprecated: This function was deprecated in {{$docData.DeprecatedPlatform}} {{$docData.DeprecatedVersion}}.
+//
+{{end -}}
+// Added in {{$docData.IntroducedPlatform}} {{$docData.IntroducedVersion}}.
+{{- end -}}
+{{if $docData.DocURL -}}
+{{template "doc_comment" $docData}}
+{{end -}}
+func {{$docData.Name}}({{range $i, $p := $docData.Parameters}}{{if $i}}, {{end}}{{$p.Name}} {{$p.Type}}{{end}}){{if $docData.ReturnType}} {{$docData.ReturnType}}{{end}} {
+	{{if $.WithRefMethods -}}
+	fn := _{{$docData.Name}}.(func({{range $i, $p := $docData.Parameters}}{{if $i}}, {{end}}unsafe.Pointer{{end}}){{if $docData.ReturnType}} unsafe.Pointer{{end}})
+	{{if $docData.ReturnType}}ret := {{end}}fn({{range $i, $p := $docData.Parameters}}{{if $i}}, {{end}}{{$p.Name}}.Ptr(){{end}})
+	{{if $docData.ReturnType -}}
+	return To{{$docData.ReturnType}}(ret)
+	{{- end -}}
+	{{else -}}
+	{{if $docData.ReturnType}}return {{end}}_{{$docData.Name}}({{range $i, $p := $docData.Parameters}}{{if $i}}, {{end}}{{$p.Name}}{{end}})
+	{{- end}}
+}{{debug "functions.gen.go/function" $docData.Name }}
+{{end}}
+
+-- class_ios.gen.go --
+//go:build darwin && ios
+
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+import (
+	"unsafe"
+
+	"{{.OutputModule}}/objc"
+{{- $imports := getClassImports .Class $.Framework $.OutputModule}}
+{{- $sortedImports := getSortedClassImports $imports}}
+{{- range $sortedImports}}
+	"{{.ImportPath}}"
+{{- end}}
+)
+
+{{with .Class -}}
+{{$framework := $.Framework -}}
+{{$className := .Name -}}
+{{$structName := classToStructName .Name -}}
+{{$classTypeName := print "_" $structName "Class" -}}
+{{$classReceiver := receiverName $structName true -}}
+{{$instReceiver := receiverName $structName false -}}
+
+// iOS-only methods for {{$structName}}
+{{range filterPropertyMethods .}}
+{{- if and (not (isEssentialSelector .Selector)) (eq (len .Availability.DeprecatedAt) 0) (iosOnlyMethod .)}}
+{{- $paramNames := formatMethodParamNamesWithFramework . $framework}}
+{{- $goType := mapObjCTypeToGo .ReturnType $framework}}
+{{- $returnType := $goType}}
+{{- if eq $goType $className}}{{$returnType = $structName}}{{else}}{{$returnType = typeToInterfaceType $goType}}{{end}}
+{{- $isInitMethod := hasPrefix .Selector "init"}}
+{{- $hasValidReturnType := or $isInitMethod (eq .ReturnType "") (eq .ReturnType "void") (ne $goType "")}}
+{{- if $hasValidReturnType}}
+{{- if or .Abstract .DocURL}}
+{{template "doc_comment" .}}
+{{end -}}
+func ({{$instReceiver}} {{$structName}}) {{.Name}}({{formatMethodParams .}}){{if $isInitMethod}} {{$structName}}{{else}}{{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{$returnType}}{{end}}{{end}} {
+	{{- if $isInitMethod}}
+	rv := objc.Send[{{$structName}}]({{$instReceiver}}.ID, objc.Sel("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+	return rv
+	{{- else if and (ne .ReturnType "") (ne .ReturnType "void")}}
+	rv := objc.Send[{{concreteReturnType $goType}}]({{$instReceiver}}.ID, objc.Sel("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+	{{- if and (eq (concreteReturnType $goType) "objc.ID") (eq $returnType "IObject")}}
+	return {{objectType $.Framework}}{ID: rv}
+	{{- else if and (eq (concreteReturnType $goType) "[]objc.ID") (or (eq $returnType "[]IObject") (eq $returnType "[]objectivec.IObject"))}}
+	result := make([]{{if eq $.Framework "ObjectiveC"}}IObject{{else}}objectivec.IObject{{end}}, len(rv))
+	for i, id := range rv {
+		result[i] = {{objectType $.Framework}}{ID: id}
+	}
+	return result
+	{{- else if and (hasPrefix (concreteReturnType $goType) "[]") (ne (concreteReturnType $goType) $returnType)}}
+	// Slice of concrete type to slice of interface - needs conversion
+	result := make({{$returnType}}, len(rv))
+	for i, v := range rv {
+		result[i] = v
+	}
+	return result
+	{{- else}}
+	return rv
+	{{- end}}
+	{{- else}}
+	objc.Send[objc.ID]({{$instReceiver}}.ID, objc.Sel("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+	{{- end}}
+}
+{{- end}}
+{{- end}}
+{{- end}}
+
+// iOS-only properties
+{{- range .Properties}}
+{{- if and (not .IsClassProperty) (iosOnlyProperty .)}}
+{{- $typeToMap := .Type}}{{if .ObjCType}}{{$typeToMap = .ObjCType}}{{end}}
+{{- $goType := mapObjCTypeToGo $typeToMap $framework}}
+{{- $returnType := typeToInterfaceType $goType}}
+{{- $capitalizedName := capitalize .Name}}
+{{- $conflictsWithParent := propertyConflictsWithParent $className $.Class.SuperClass .Name}}
+{{- if and (ne $goType "") (not $conflictsWithParent)}}
+
+{{- if or .Abstract .DocURL}}
+{{template "doc_comment" .}}
+{{end -}}
+func ({{$instReceiver}} {{$structName}}) {{$capitalizedName}}() {{$returnType}} {
+	rv := objc.Send[{{concreteReturnType $goType}}]({{$instReceiver}}.ID, objc.Sel("{{.Name}}"))
+	{{- if and (eq (concreteReturnType $goType) "objc.ID") (eq $returnType "IObject")}}
+	return {{objectType $.Framework}}{ID: rv}
+	{{- else if and (eq (concreteReturnType $goType) "[]objc.ID") (eq $returnType "[]IObject")}}
+	result := make([]{{if eq $.Framework "ObjectiveC"}}IObject{{else}}objectivec.IObject{{end}}, len(rv))
+	for i, id := range rv {
+		result[i] = {{objectType $.Framework}}{ID: id}
+	}
+	return result
+	{{- else}}
+	return rv
+	{{- end}}
+}
+
+{{- $isReadOnly := contains .Attributes "readonly"}}
+{{- if not $isReadOnly}}
+{{- $setterParamType := typeToInterfaceType $goType}}
+func ({{$instReceiver}} {{$structName}}) Set{{$capitalizedName}}(value {{$setterParamType}}) {
+	{{$instReceiver}}.ID.Send(objc.RegisterName("set{{$capitalizedName}}:"), value)
+}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+
+{{end}}
+
+-- _class_header.tpl --
+{{define "class_header"}}
+{{debug "class_header" "Header for %s" .ClassName}}
+// The class instance for the [{{.StructName}}] class.
+var (
+	{{.VarName}}     {{.ClassTypeName}}
+	{{.VarName}}Once sync.Once
+)
+
+func get{{.StructName}}Class() {{.ClassTypeName}} {
+	{{.VarName}}Once.Do(func() {
+		{{.VarName}} = {{.ClassTypeName}}{objc.GetClass("{{.ClassName}}")}
+	})
+	return {{.VarName}}
+}
+
+type {{.ClassTypeName}} struct {
+	class objc.Class
+}
+{{debug "class_header" "End header"}}
+{{end}}
+
+-- _class_struct.tpl --
+{{define "class_struct"}}
+{{debug "class_struct" "Struct for %s" .StructName}}
+{{if .Abstract -}}
+// {{commentLine .Abstract}}
+{{if .Overview}}//
+// {{commentLine .Overview}}
+{{end -}}
+{{end -}}
+{{if or .Abstract .DocURL}}
+{{template "doc_comment" .Class}}
+{{end -}}
+type {{.StructName}} struct {
+	{{getStructEmbeddedField .Class .Framework}}
+}
+
+// {{.StructName}}From constructs a [{{.StructName}}] from an unsafe.Pointer.
+{{if .Abstract -}}
+//
+// {{commentLine .Abstract}}
+{{end -}}
+func {{.StructName}}From(ptr unsafe.Pointer) {{.StructName}} {
+	{{getFromConstructorBody .Class .Framework}}
+}
+{{debug "class_struct" "End struct"}}
+{{end}}
+
+-- _class_interface.tpl --
+{{define "class_interface"}}
+{{debug "class_interface" "Interface for %s" .StructName}}
+// An interface definition for the [{{.StructName}}] class.
+type I{{.StructName}} interface {
+	{{getInterfaceParent .Class}}
+	{{template "class_interface_properties" .}}
+	{{template "class_interface_methods" .}}
+}
+{{debug "class_interface" "End interface"}}
+{{end}}
+
+{{define "class_interface_properties"}}
+{{debug "class_interface_properties" "Properties for %s" .StructName}}
+	// properties:
+	{{- range .Class.Properties}}
+	{{- if and (not .IsClassProperty) (not (iosOnlyProperty .))}}
+	{{- $typeToMap := .Type}}{{if .ObjCType}}{{$typeToMap = .ObjCType}}{{end}}
+	{{- $goType := mapObjCTypeToGo $typeToMap $.Framework}}
+	{{- $returnType := typeToInterfaceType $goType}}
+	{{- $capitalizedName := capitalize .Name}}
+	{{- $conflictsWithParent := propertyConflictsWithParent $.ClassName $.Class.SuperClass .Name}}
+	{{- $conflictsWithParentMethod := propertyConflictsWithParentMethod . $.Class $.Framework}}
+	{{- if and (ne $goType "") (not $conflictsWithParent) (not $conflictsWithParentMethod)}}
+	{{$capitalizedName}}() {{$returnType}}
+	{{- $isReadOnly := contains .Attributes "readonly"}}
+	{{- if not $isReadOnly}}
+	{{- $setterParamType := typeToInterfaceType $goType}}
+	Set{{$capitalizedName}}(value {{$setterParamType}})
+	{{- end}}
+	{{- end}}
+	{{- end}}
+	{{- end}}
+{{debug "class_interface_properties" "End properties"}}
+{{end}}
+
+{{define "class_interface_methods"}}
+{{debug "class_interface_methods" "Methods for %s" .StructName}}
+	// methods:
+	{{- range filterPropertyMethods .Class}}
+	{{- if and (not (isEssentialSelector .Selector)) (not (isInheritedFromNSObject .Selector)) (eq (len .Availability.DeprecatedAt) 0) (not (iosOnlyMethod .)) (not (methodConflictsWithParent . $.Class $.Framework))}}
+	{{- $goType := mapObjCTypeToGo .ReturnType $.Framework}}
+	{{- $interfaceType := typeToInterfaceType $goType}}
+	{{- $isInitMethod := hasPrefix .Selector "init"}}
+	{{- $hasValidReturnType := or $isInitMethod (eq .ReturnType "") (eq .ReturnType "void") (ne $goType "")}}
+	{{- if $hasValidReturnType}}
+	{{.Name}}({{formatMethodParams .}}){{if $isInitMethod}} {{$.StructName}}{{else}}{{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{$interfaceType}}{{end}}{{end}}
+	{{- end}}
+	{{- end}}
+	{{- end}}
+{{debug "class_interface_methods" "End methods"}}
+{{end}}
+
+-- _class_constructors.tpl --
+{{define "class_constructors"}}
+{{debug "class_constructors" "Constructors for %s" .StructName}}
+// Alloc allocates a new instance without initialization.
+func ({{.ClassReceiver}} {{.ClassTypeName}}) Alloc() {{.StructName}} {
+	rv := objc.Send[{{.StructName}}](objc.ID({{.ClassReceiver}}.class), objc.Sel("alloc"))
+	return rv
+}
+
+// New creates and returns a new autoreleased instance (equivalent to [[Class alloc] init]).
+func ({{.ClassReceiver}} {{.ClassTypeName}}) New() {{.StructName}} {
+	rv := objc.Send[{{.StructName}}](objc.ID({{.ClassReceiver}}.class), objc.Sel("new"))
+	rv.Autorelease()
+	return rv
+}
+
+// Init initializes the instance.
+func ({{.InstReceiver}} {{.StructName}}) Init() {{.StructName}} {
+	rv := objc.Send[{{.StructName}}]({{.InstReceiver}}.ID, objc.Sel("init"))
+	return rv
+}
+
+// Autorelease adds the receiver to the current autorelease pool.
+func ({{.InstReceiver}} {{.StructName}}) Autorelease() {{.StructName}} {
+	rv := objc.Send[{{.StructName}}]({{.InstReceiver}}.ID, objc.Sel("autorelease"))
+	return rv
+}
+
+// New{{.StructName}} creates a new {{.StructName}} instance.
+func New{{.StructName}}() {{.StructName}} {
+	return get{{.StructName}}Class().New()
+}
+{{debug "class_constructors" "End constructors"}}
+{{end}}
+
+-- _class_init_methods.tpl --
+{{define "class_init_methods"}}
+{{debug "class_init_methods" "Init methods for %s" .StructName}}
+{{- if .Class.HasInitMethods -}}
+{{- range prepareInitMethodsWithClassName .ClassName .Class.Methods}}
+{{- if ne .Selector "init"}}
+{{- $constructorName := initMethodToConstructorName $.ClassName .Selector}}
+{{- $paramNames := formatMethodParamNamesWithFramework . $.Framework}}
+{{- if or .Abstract .DocURL}}
+{{template "doc_comment" .}}
+{{end -}}
+func {{$constructorName}}({{formatMethodParams .}}) {{$.StructName}} {
+{{getConstructorBody . $.StructName $paramNames}}
+}{{debug "class_init_methods/constructor" $constructorName }}
+{{end}}
+{{- end}}
+{{end -}}
+{{debug "class_init_methods" "End init methods"}}
+{{end}}
+
+-- _class_methods.tpl --
+{{define "class_methods"}}
+{{debug "class_methods" "Class methods for %s" .StructName}}
+{{- range prepareClassMethods .Class.Methods}}
+{{- if not (isEssentialSelector .Selector)}}
+{{- $paramNames := formatMethodParamNamesWithFramework . $.Framework}}
+{{- $goType := mapObjCTypeToGo .ReturnType $.Framework}}
+{{- $returnType := $goType}}
+{{- if eq $goType $.ClassName}}{{$returnType = $.StructName}}{{else}}{{$returnType = typeToInterfaceType $goType}}{{end}}
+{{- if or .Abstract .DocURL}}
+{{template "doc_comment" .}}
+{{end -}}
+func ({{$.ClassReceiver}} {{$.ClassTypeName}}) {{.Name}}({{formatMethodParams .}}){{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{$returnType}}{{end}} {
+	{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}
+	rv := objc.Send[{{concreteReturnType $goType}}](objc.ID({{$.ClassReceiver}}.class), objc.Sel("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+	{{- if and (eq (concreteReturnType $goType) "objc.ID") (eq $returnType "IObject")}}
+	return {{objectType $.Framework}}{ID: rv}
+	{{- else if and (eq (concreteReturnType $goType) "[]objc.ID") (eq $returnType "[]IObject")}}
+	result := make([]{{if eq $.Framework "ObjectiveC"}}IObject{{else}}objectivec.IObject{{end}}, len(rv))
+	for i, id := range rv {
+		result[i] = {{objectType $.Framework}}{ID: id}
+	}
+	return result
+	{{- else}}
+	return rv
+	{{- end}}
+	{{- else}}
+	objc.Send[objc.ID](objc.ID({{$.ClassReceiver}}.class), objc.Sel("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+	{{- end}}
+}{{debug "class_methods/method" "Class method for" .Name }}
+{{end}}
+{{- end}}
+{{debug "class_methods" "End class methods"}}
+{{end}}
+
+{{define "class_properties_class"}}
+{{debug "class_properties_class" "Class properties for %s" .StructName}}
+{{- range .Class.Properties}}
+{{- if .IsClassProperty}}
+{{- $goType := mapObjCTypeToGo .Type $.Framework}}
+{{- $returnType := $goType}}
+{{- if eq $goType $.ClassName}}{{$returnType = $.StructName}}{{else}}{{$returnType = typeToInterfaceType $goType}}{{end}}
+{{- $capitalizedName := capitalize .Name}}
+{{- $conflictsWithParent := propertyConflictsWithParent $.ClassName $.Class.SuperClass .Name}}
+{{- if and (ne $goType "") (not $conflictsWithParent)}}
+
+{{- if or .Abstract .DocURL}}
+{{template "doc_comment" .}}
+{{end -}}
+func ({{$.ClassReceiver}} {{$.ClassTypeName}}) {{$capitalizedName}}() {{$returnType}} {
+	rv := objc.Send[{{concreteReturnType $goType}}](objc.ID({{$.ClassReceiver}}.class), objc.Sel("{{.Name}}"))
+	return rv
+}{{debug "class_properties_class/property" .Name }}
+{{- end}}
+{{- end}}
+{{- end}}
+{{debug "class_properties_class" "End class properties"}}
+{{end}}
+
+{{define "instance_methods"}}
+{{debug "instance_methods" "Instance methods for %s" .StructName}}
+{{- range filterPropertyMethods .Class}}
+{{- if and (not (isEssentialSelector .Selector)) (eq (len .Availability.DeprecatedAt) 0) (not (iosOnlyMethod .)) (not (methodConflictsWithParent . $.Class $.Framework))}}
+{{- $paramNames := formatMethodParamNamesWithFramework . $.Framework}}
+{{- $goType := mapObjCTypeToGo .ReturnType $.Framework}}
+{{- $returnType := $goType}}
+{{- if eq $goType $.ClassName}}{{$returnType = $.StructName}}{{else}}{{$returnType = typeToInterfaceType $goType}}{{end}}
+{{- $isInitMethod := hasPrefix .Selector "init"}}
+{{- $hasValidReturnType := or $isInitMethod (eq .ReturnType "") (eq .ReturnType "void") (ne $goType "")}}
+{{- if $hasValidReturnType}}
+{{- if or .Abstract .DocURL}}
+{{template "doc_comment" .}}
+{{end -}}
+{{- $methodSelector := .Selector}}
+{{- range .Parameters}}
+{{- $relaxedInfo := getRelaxedParamInfo $.ClassName $methodSelector .Name}}
+{{- if $relaxedInfo}}
+// Note: {{.Name}} parameter relaxed to objectivec.IObject due to cross-framework reference.
+// Expected type: {{$relaxedInfo.ExpectedGoType}} (originally {{$relaxedInfo.OriginalType}})
+{{end}}
+{{- end -}}
+func ({{$.InstReceiver}} {{$.StructName}}) {{.Name}}({{formatMethodParams .}}){{if $isInitMethod}} {{$.StructName}}{{else}}{{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{$returnType}}{{end}}{{end}} {
+	{{- if $isInitMethod}}
+	rv := objc.Send[{{$.StructName}}]({{$.InstReceiver}}.ID, objc.Sel("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+	return rv
+	{{- else if and (ne .ReturnType "") (ne .ReturnType "void")}}
+	rv := objc.Send[{{concreteReturnType $goType}}]({{$.InstReceiver}}.ID, objc.Sel("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+	{{- if and (eq (concreteReturnType $goType) "objc.ID") (eq $returnType "IObject")}}
+	return {{objectType $.Framework}}{ID: rv}
+	{{- else if and (eq (concreteReturnType $goType) "[]objc.ID") (eq $returnType "[]IObject")}}
+	result := make([]{{if eq $.Framework "ObjectiveC"}}IObject{{else}}objectivec.IObject{{end}}, len(rv))
+	for i, id := range rv {
+		result[i] = {{objectType $.Framework}}{ID: id}
+	}
+	return result
+	{{- else}}
+	return rv
+	{{- end}}
+	{{- else}}
+	objc.Send[objc.ID]({{$.InstReceiver}}.ID, objc.Sel("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+	{{- end}}
+}{{debug "instance_methods/method" .Name }}
+{{- end}}
+{{end}}
+{{- end}}
+{{debug "instance_methods" "End instance methods"}}
+{{end}}
+
+{{define "instance_properties"}}
+{{debug "instance_properties" "Instance properties for %s" .StructName}}
+{{- range .Class.Properties}}
+{{- if not (iosOnlyProperty .)}}
+{{- $typeToMap := .Type}}{{if .ObjCType}}{{$typeToMap = .ObjCType}}{{end}}
+{{- $goType := mapObjCTypeToGo $typeToMap $.Framework}}
+{{- $returnType := typeToInterfaceType $goType}}
+{{- $capitalizedName := capitalize .Name}}
+{{- $conflictsWithParent := propertyConflictsWithParent $.ClassName $.Class.SuperClass .Name}}
+{{- $conflictsWithParentMethod := propertyConflictsWithParentMethod . $.Class $.Framework}}
+{{- if and (ne $goType "") (not $conflictsWithParent) (not $conflictsWithParentMethod)}}
+{{- if or .Abstract .DocURL}}
+{{template "doc_comment" .}}
+{{end -}}
+func ({{$.InstReceiver}} {{$.StructName}}) {{$capitalizedName}}() {{$returnType}} {
+	rv := objc.Send[{{concreteReturnType $goType}}]({{$.InstReceiver}}.ID, objc.Sel("{{.Name}}"))
+	{{- if and (eq (concreteReturnType $goType) "objc.ID") (eq $returnType "IObject")}}
+	return {{objectType $.Framework}}{ID: rv}
+	{{- else if and (eq (concreteReturnType $goType) "[]objc.ID") (or (eq $returnType "[]IObject") (eq $returnType "[]objectivec.IObject"))}}
+	result := make([]{{if eq $.Framework "ObjectiveC"}}IObject{{else}}objectivec.IObject{{end}}, len(rv))
+	for i, id := range rv {
+		result[i] = {{objectType $.Framework}}{ID: id}
+	}
+	return result
+	{{- else if and (hasPrefix (concreteReturnType $goType) "[]") (ne (concreteReturnType $goType) $returnType)}}
+	// Slice of concrete type to slice of interface - needs conversion
+	result := make({{$returnType}}, len(rv))
+	for i, v := range rv {
+		result[i] = v
+	}
+	return result
+	{{- else}}
+	return rv
+	{{- end}}
+}{{debug "instance_properties/getter" .Name }}
+{{ $isReadOnly := contains .Attributes "readonly"}}
+{{- if not $isReadOnly}}
+{{- $setterParamType := typeToInterfaceType $goType}}
+
+{{- if or .Abstract .DocURL}}
+{{template "doc_comment" .}}
+{{else}}
+// Set{{$capitalizedName}} sets the value of the {{.Name}} property.
+{{end -}}
+func ({{$.InstReceiver}} {{$.StructName}}) Set{{$capitalizedName}}(value {{$setterParamType}}) {
+	{{- if hasPrefix $goType "[]"}}
+	var nsArray objc.ID
+	if len(value) > 0 {
+		nsArray = objc.ID(objc.GetClass("NSMutableArray")).Send(objc.Sel("arrayWithCapacity:"), len(value))
+		for _, item := range value {
+			nsArray.Send(objc.Sel("addObject:"), item)
+		}
+	} else {
+		nsArray = objc.ID(objc.GetClass("NSArray")).Send(objc.Sel("array"))
+	}
+	objc.Send[objc.ID]({{$.InstReceiver}}.ID, objc.Sel("set{{$capitalizedName}}:"), nsArray)
+	{{- else if eq $goType "string"}}
+	objc.Send[objc.ID]({{$.InstReceiver}}.ID, objc.Sel("set{{$capitalizedName}}:"), objc.String(value))
+	{{- else if ne $setterParamType $goType}}
+	objc.Send[objc.ID]({{$.InstReceiver}}.ID, objc.Sel("set{{$capitalizedName}}:"), value)
+	{{- else}}
+	objc.Send[objc.ID]({{$.InstReceiver}}.ID, objc.Sel("set{{$capitalizedName}}:"), value)
+	{{- end}}
+}{{debug "instance_properties/setter" .Name }}
+{{end}}{{end}}{{end}}{{end}}
+{{debug "instance_properties" "End instance properties"}}
+{{end}}
+-- class.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+import (
+	"sync"
+	"unsafe"
+
+	"{{.OutputModule}}/objc"
+{{- $imports := getClassImports .Class $.Framework $.OutputModule}}
+{{- $sortedImports := getSortedClassImports $imports}}
+{{- range $sortedImports}}
+	"{{.ImportPath}}"
+{{- end}}
+)
+
+{{with .Class -}}
+{{$framework := $.Framework -}}
+{{$className := .Name -}}
+{{$structName := classToStructName .Name -}}
+{{$varName := classToVarName .Name -}}
+{{$classTypeName := print "_" $structName "Class" -}}
+{{$classReceiver := receiverName $structName true -}}
+{{$instReceiver := receiverName $structName false -}}
+{{debug "class.gen.go" "Generating class %s" $className}}
+
+{{template "class_header" (dict "ClassName" $className "StructName" $structName "VarName" $varName "ClassTypeName" $classTypeName)}}
+
+{{template "class_interface" (dict "Class" . "StructName" $structName "ClassName" $className "Framework" $framework)}}
+
+{{template "class_constructors" (dict "StructName" $structName "ClassTypeName" $classTypeName "ClassReceiver" $classReceiver "InstReceiver" $instReceiver)}}
+
+{{template "class_struct" (dict "Class" . "StructName" $structName "Abstract" .Abstract "Overview" .Overview "DocURL" .DocURL "Framework" $framework)}}
+
+{{template "class_init_methods" (dict "Class" . "StructName" $structName "ClassName" $className "Framework" $framework)}}
+
+{{template "class_methods" (dict "Class" . "StructName" $structName "ClassName" $className "Framework" $framework "ClassReceiver" $classReceiver "ClassTypeName" $classTypeName)}}
+
+{{template "class_properties_class" (dict "Class" . "StructName" $structName "ClassName" $className "Framework" $framework "ClassReceiver" $classReceiver "ClassTypeName" $classTypeName)}}
+
+{{template "instance_methods" (dict "Class" . "StructName" $structName "ClassName" $className "Framework" $framework "InstReceiver" $instReceiver)}}
+
+{{template "instance_properties" (dict "Class" . "StructName" $structName "ClassName" $className "Framework" $framework "InstReceiver" $instReceiver)}}
+
+{{debug "class.gen.go" "End class %s" $className}}
+{{end}}
+-- class.gen_test.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}_test
+
+import (
+	"{{.OutputModule}}/{{.PackageName}}"
+{{- $needsFoundation := false}}
+{{- $needsCoreGraphics := false}}
+{{- $framework := $.Framework}}
+{{- range prepareInitMethodsWithClassName .Class.Name .Class.Methods}}
+{{- $canGenerateAllParams := true}}
+{{- range .Parameters}}
+{{- $goType := mapObjCTypeToGo .Type $framework}}
+{{- if not (canGenerateTestValue $goType .Name)}}
+{{- $canGenerateAllParams = false}}
+{{- end}}
+{{- end}}
+{{- if $canGenerateAllParams}}
+{{- range .Parameters}}
+{{- $goType := mapObjCTypeToGo .Type $framework}}
+{{- if hasPrefix $goType "foundation."}}
+{{- $needsFoundation = true}}
+{{- end}}
+{{- if hasPrefix $goType "coregraphics."}}
+{{- $needsCoreGraphics = true}}
+{{- else if and (or (eq $goType "CGRect") (eq $goType "CGSize") (eq $goType "CGPoint")) (ne $framework "Foundation")}}
+{{- $needsCoreGraphics = true}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- if $needsCoreGraphics}}
+	"{{.OutputModule}}/coregraphics"
+{{- end}}
+{{- if $needsFoundation}}
+	"{{.OutputModule}}/foundation"
+{{- end}}
+)
+
+// Suppress unused import errors
+var _ = {{.PackageName}}.New{{classToStructName .Class.Name}}
+{{with .Class -}}
+{{$structName := classToStructName .Name -}}
+{{$packageName := $.PackageName -}}
+{{$className := .Name -}}
+{{$framework := $.Framework -}}
+{{if .HasInitMethods -}}
+{{- range prepareInitMethodsWithClassName $className .Methods}}
+{{- $constructorName := initMethodToConstructorName $className .Selector}}
+{{- $testMethodName := printf "Example%s" $constructorName}}
+{{- $canGenerateAllParams := true}}
+{{- range .Parameters}}
+{{- $goType := mapObjCTypeToGo .Type $framework}}
+{{- $goType = typeToInterfaceType $goType}}
+{{- if not (canGenerateTestValue $goType .Name)}}
+{{- $canGenerateAllParams = false}}
+{{- end}}
+{{- end}}
+{{- if and $canGenerateAllParams (not (shouldExcludeTestMethod $framework $testMethodName))}}
+// Example{{$constructorName}} demonstrates how to create a {{$structName}} instance{{if ne .Selector "init"}} using {{$constructorName}}{{end}}.
+{{if .Abstract -}}
+// {{.Abstract}}
+{{end -}}
+func Example{{$constructorName}}() {
+	{{- if eq (len .Parameters) 0}}
+	_ = {{$packageName}}.{{$constructorName}}()
+	{{- else}}
+	_ = {{$packageName}}.{{$constructorName}}(
+		{{- range $i, $p := .Parameters}}
+		{{- $goType := mapObjCTypeToGo $p.Type $framework}}
+		{{- $goType = typeToInterfaceType $goType}}
+		{{- $testValue := generateTestValueWithPackage $goType $framework $packageName $p.Name}}
+		{{$testValue}}, // {{$p.Name}} {{$goType}}
+		{{- end}}
+	)
+	{{- end}}
+	// Output:
+}{{end}}{{end}}{{end -}}
+
+{{/* Generate examples for parameterless instance methods */}}
+{{- range filterPropertyMethods .}}
+{{- if and (not .IsClassMethod) (eq (len .Parameters) 0) (not (isEssentialSelector .Selector)) (not (isInheritedFromNSObject .Selector)) (eq (len .Availability.DeprecatedAt) 0) (not (iosOnlyMethod .))}}
+{{- $methodName := disambiguateMethodName .}}
+{{- $isSafe := isSafeToTestOnNSObject .Selector}}
+{{- $testMethodName := printf "Example%s_%s" $structName $methodName}}
+{{- $goType := mapObjCTypeToGo .ReturnType $framework}}
+{{- $hasReturnValue := and (ne .ReturnType "") (ne .ReturnType "void")}}
+{{- if not (shouldExcludeTestMethod $framework $testMethodName)}}
+// Example{{$structName}}_{{$methodName}} demonstrates using {{$methodName}} on a {{$structName}} instance.
+{{if .Abstract -}}
+// {{.Abstract}}
+{{end -}}
+{{if not $isSafe -}}
+//
+// Note: This example is not executed because {{$methodName}} crashes when called on bare NSObject
+// (it's a protocol/category method that should be overridden by subclasses).
+{{end -}}
+func Example{{$structName}}_{{$methodName}}() {
+	obj := {{$packageName}}.New{{$structName}}()
+	{{if $hasReturnValue -}}
+	_ = obj.{{$methodName}}()
+	{{- else -}}
+	obj.{{$methodName}}()
+	{{- end}}
+	{{if $isSafe -}}
+	// Output:
+	{{end -}}
+}
+{{end}}{{end}}{{end -}}
+{{end -}}
+-- protocols.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+import "github.com/ebitengine/purego/objc"
+
+{{debug "protocols.gen.go" "Generating %d protocols for %s" .ProtocolCount .Framework}}
+// {{.Framework}} Protocols ({{.ProtocolCount}} total)
+//
+// This file contains protocol references for {{.Framework}}.
+// Use these when registering custom classes that conform to these protocols.
+
+var (
+{{- range .Protocols}}
+	{{stripNSPrefix .Name}}Protocol *objc.Protocol
+{{- end}}
+)
+
+func init() {
+{{- range .Protocols}}
+	{{stripNSPrefix .Name}}Protocol = objc.GetProtocol("{{.Name}}")
+{{- end}}
+}
+
+-- protocol.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+import "github.com/ebitengine/purego/objc"
+
+{{with .Protocol -}}
+{{$proto := . -}}
+{{- $protocolVarName := stripNSPrefix .Name -}}
+// {{$protocolVarName}}Protocol is the {{.Name}} protocol.
+{{- if not .Availability.IsEmpty}}
+//
+// Availability:
+{{- range .Availability.Platforms}}
+//   - {{.}} {{index $proto.Availability.IntroducedAt .}}+{{if $proto.Availability.Beta}} (Beta){{else}}{{if index $proto.Availability.DeprecatedAt .}} (Deprecated in {{index $proto.Availability.DeprecatedAt .}}){{end}}{{end}}
+{{- end}}
+{{- end}}
+//
+// Use this protocol when registering custom classes that conform to {{.Name}}.
+var {{$protocolVarName}}Protocol *objc.Protocol
+
+func init() {
+	{{$protocolVarName}}Protocol = objc.GetProtocol("{{.Name}}")
+}
+{{- end -}}
+-- protocol_interface.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+{{- $outputModule := .OutputModule}}
+{{- $frameworkName := .Framework}}
+{{- with .Protocol}}
+{{- $hasUnsafePointer := false}}
+{{- $hasObjc := false}}
+{{- $isDelegate := or .IsDelegate .IsDataSource}}
+{{- $crossFrameworkImports := getProtocolCrossFrameworkImports . $frameworkName $outputModule}}
+{{- range .RequiredMethods}}
+  {{- $goType := mapObjCTypeToGo .ReturnType $frameworkName}}
+  {{- if eq $goType "unsafe.Pointer"}}{{$hasUnsafePointer = true}}{{end}}
+  {{- if or (strContains $goType "objc.") (hasPrefix $goType "IObject") (eq $goType "objc.ID")}}{{$hasObjc = true}}{{end}}
+  {{- range .Parameters}}
+    {{- $paramGoType := mapObjCTypeToGo .Type $frameworkName}}
+    {{- if eq $paramGoType "unsafe.Pointer"}}{{$hasUnsafePointer = true}}{{end}}
+    {{- if or (strContains $paramGoType "objc.") (hasPrefix $paramGoType "IObject") (eq $paramGoType "objc.ID")}}{{$hasObjc = true}}{{end}}
+  {{- end}}
+{{- end}}
+{{- range .OptionalMethods}}
+  {{- $goType := mapObjCTypeToGo .ReturnType $frameworkName}}
+  {{- if eq $goType "unsafe.Pointer"}}{{$hasUnsafePointer = true}}{{end}}
+  {{- if or (strContains $goType "objc.") (hasPrefix $goType "IObject") (eq $goType "objc.ID")}}{{$hasObjc = true}}{{end}}
+  {{- range .Parameters}}
+    {{- $paramGoType := mapObjCTypeToGo .Type $frameworkName}}
+    {{- if eq $paramGoType "unsafe.Pointer"}}{{$hasUnsafePointer = true}}{{end}}
+    {{- if or (strContains $paramGoType "objc.") (hasPrefix $paramGoType "IObject") (eq $paramGoType "objc.ID")}}{{$hasObjc = true}}{{end}}
+  {{- end}}
+{{- end}}
+{{- if or $hasUnsafePointer $hasObjc $isDelegate (gt (len $crossFrameworkImports) 0)}}
+
+import (
+{{- if $hasUnsafePointer}}
+	"unsafe"
+{{- end}}
+{{- if or $hasObjc $isDelegate}}
+
+	"github.com/tmc/appledocs/generated/objc"
+{{- end}}
+{{- range $pkg, $path := $crossFrameworkImports}}
+
+	"{{$path}}"
+{{- end}}
+)
+{{- end}}
+{{- end}}
+
+{{with .Protocol -}}
+{{$proto := . -}}
+{{- $framework := $.Framework -}}
+{{- $protocolInterfaceName := printf "P%s" (stripNSPrefix .Name) -}}
+// {{$protocolInterfaceName}} is the {{.Name}} protocol interface.
+{{- if .Abstract}}
+//
+// {{.Abstract}}
+{{- end}}
+{{- if not .Availability.IsEmpty}}
+//
+// Availability:
+{{- range .Availability.Platforms}}
+//   - {{.}} {{index $proto.Availability.IntroducedAt .}}+{{if $proto.Availability.Beta}} (Beta){{else}}{{if index $proto.Availability.DeprecatedAt .}} (Deprecated in {{index $proto.Availability.DeprecatedAt .}}){{end}}{{end}}
+{{- end}}
+{{- end}}
+{{- if .DocURL}}
+//
+// See: {{.DocURL}}
+{{- end}}
+type {{$protocolInterfaceName}} interface {
+{{- if .RequiredMethods}}
+	// Required methods
+{{- range .RequiredMethods}}
+	{{- $goReturnType := mapObjCTypeToGo .ReturnType $framework}}
+	{{- $returnType := $goReturnType}}
+	{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}{{$returnType = typeToInterfaceType $goReturnType}}{{end}}
+	{{- $hasReturnValue := and (ne .ReturnType "") (ne .ReturnType "void")}}
+	{{.Name}}({{formatMethodParams .}}){{if $hasReturnValue}} {{$returnType}}{{end}}{{debug "protocol_interface/required_method" .Name}}
+{{- end}}
+{{- end}}
+{{- if .OptionalMethods}}
+	{{- if .RequiredMethods}}
+
+	{{- end}}
+	// Optional methods
+{{- range .OptionalMethods}}
+	{{- $goReturnType := mapObjCTypeToGo .ReturnType $framework}}
+	{{- $returnType := $goReturnType}}
+	{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}{{$returnType = typeToInterfaceType $goReturnType}}{{end}}
+	{{- $hasReturnValue := and (ne .ReturnType "") (ne .ReturnType "void")}}
+	{{.Name}}({{formatMethodParams .}}){{if $hasReturnValue}} {{$returnType}}{{end}}
+	Has{{.Name}}() bool
+{{- end}}
+{{- end}}
+}
+
+{{- /* Generate builder struct for delegate/datasource protocols only */}}
+{{- if or .IsDelegate .IsDataSource}}
+{{- $builderName := stripNSPrefix .Name}}
+
+// {{$builderName}} is a delegate implementation builder for the {{$protocolInterfaceName}} protocol.
+//
+// Use this struct to create a custom delegate by setting handler functions for the methods you want to implement.
+type {{$builderName}} struct {
+{{- range .OptionalMethods}}
+	{{- $goReturnType := mapObjCTypeToGo .ReturnType $framework}}
+	{{- $returnType := $goReturnType}}
+	{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}{{$returnType = typeToInterfaceType $goReturnType}}{{end}}
+	_{{.Name}} func({{formatMethodParams .}}){{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{$returnType}}{{end}}
+{{- end}}
+{{- range .RequiredMethods}}
+	{{- $goReturnType := mapObjCTypeToGo .ReturnType $framework}}
+	{{- $returnType := $goReturnType}}
+	{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}{{$returnType = typeToInterfaceType $goReturnType}}{{end}}
+	_{{.Name}} func({{formatMethodParams .}}){{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{$returnType}}{{end}}
+{{- end}}
+}
+
+{{- /* Generate Set*() methods for all protocol methods */}}
+{{- range .OptionalMethods}}
+
+// Set{{.Name}} sets the handler for the {{.Name}} delegate method.
+{{- if .Abstract}}
+//
+// {{.Abstract}}
+{{- end}}
+{{- $goReturnType := mapObjCTypeToGo .ReturnType $framework}}
+{{- $returnType := $goReturnType}}
+{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}{{$returnType = typeToInterfaceType $goReturnType}}{{end}}
+func (d *{{$builderName}}) Set{{.Name}}(f func({{formatMethodParams .}}){{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{$returnType}}{{end}}) {
+	d._{{.Name}} = f
+}
+{{- end}}
+{{- range .RequiredMethods}}
+
+// Set{{.Name}} sets the handler for the {{.Name}} delegate method.
+{{- if .Abstract}}
+//
+// {{.Abstract}}
+{{- end}}
+{{- $goReturnType := mapObjCTypeToGo .ReturnType $framework}}
+{{- $returnType := $goReturnType}}
+{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}{{$returnType = typeToInterfaceType $goReturnType}}{{end}}
+func (d *{{$builderName}}) Set{{.Name}}(f func({{formatMethodParams .}}){{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{$returnType}}{{end}}) {
+	d._{{.Name}} = f
+}
+{{- end}}
+
+{{- /* Generate method implementations that call function fields */}}
+{{- range .OptionalMethods}}
+
+// {{.Name}} implements the {{$protocolInterfaceName}} interface.
+{{- $goReturnType := mapObjCTypeToGo .ReturnType $framework}}
+{{- $returnType := $goReturnType}}
+{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}{{$returnType = typeToInterfaceType $goReturnType}}{{end}}
+func (d *{{$builderName}}) {{.Name}}({{formatMethodParams .}}){{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{$returnType}}{{end}} {
+	{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}
+	if d._{{.Name}} != nil {
+		return d._{{.Name}}({{formatMethodParamNames .}})
+	}
+	var zero {{$returnType}}
+	return zero
+	{{- else}}
+	if d._{{.Name}} != nil {
+		d._{{.Name}}({{formatMethodParamNames .}})
+	}
+	{{- end}}
+}
+
+// Has{{.Name}} returns true if a handler for {{.Name}} has been set.
+func (d *{{$builderName}}) Has{{.Name}}() bool {
+	return d._{{.Name}} != nil
+}
+{{- end}}
+{{- range .RequiredMethods}}
+
+// {{.Name}} implements the {{$protocolInterfaceName}} interface.
+{{- $goReturnType := mapObjCTypeToGo .ReturnType $framework}}
+{{- $returnType := $goReturnType}}
+{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}{{$returnType = typeToInterfaceType $goReturnType}}{{end}}
+func (d *{{$builderName}}) {{.Name}}({{formatMethodParams .}}){{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{$returnType}}{{end}} {
+	{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}
+	if d._{{.Name}} != nil {
+		return d._{{.Name}}({{formatMethodParamNames .}})
+	}
+	var zero {{$returnType}}
+	return zero
+	{{- else}}
+	if d._{{.Name}} != nil {
+		d._{{.Name}}({{formatMethodParamNames .}})
+	}
+	{{- end}}
+}
+
+// Has{{.Name}} returns true if a handler for {{.Name}} has been set.
+func (d *{{$builderName}}) Has{{.Name}}() bool {
+	return d._{{.Name}} != nil
+}
+{{- end}}
+{{- end}}
+
+{{- /* Generate wrapper object for protocols (Phase 3) */}}
+{{- /* Wrap existing ObjC instances that conform to a protocol */}}
+{{- if or .IsDelegate .IsDataSource}}
+{{- $wrapperName := printf "%sObject" (stripNSPrefix .Name)}}
+{{- $wrapperInterfaceName := printf "P%s" (stripNSPrefix .Name)}}
+
+// {{$wrapperName}} wraps an existing Objective-C object that conforms to the {{$wrapperInterfaceName}} protocol.
+// This allows you to safely call protocol methods on any object that implements the protocol,
+// with runtime checks for optional methods using RespondsToSelector.
+type {{$wrapperName}} struct {
+	objectivec.Object
+}
+
+// New{{$wrapperName}} creates a new protocol wrapper for an existing Objective-C object.
+// The object should implement the {{.Name}} protocol.
+func New{{$wrapperName}}(obj objectivec.Object) *{{$wrapperName}} {
+	return &{{$wrapperName}}{obj}
+}
+
+// Make sure {{$wrapperName}} implements {{$wrapperInterfaceName}}.
+var _ {{$wrapperInterfaceName}} = (*{{$wrapperName}})(nil)
+
+{{- /* Generate method wrappers that use RespondsToSelector for optional methods */}}
+{{- range .RequiredMethods}}
+
+// {{.Name}} implements the {{$wrapperInterfaceName}} interface.
+// This required method is always available on objects conforming to {{.Name}}.
+{{- $goReturnType := mapObjCTypeToGo .ReturnType $framework}}
+{{- $returnType := $goReturnType}}
+{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}{{$returnType = typeToInterfaceType $goReturnType}}{{end}}
+{{- $hasReturnValue := and (ne .ReturnType "") (ne .ReturnType "void")}}
+func (o *{{$wrapperName}}) {{.Name}}({{formatMethodParams .}}){{if $hasReturnValue}} {{$returnType}}{{end}} {
+	{{- if $hasReturnValue}}
+	return objc.Send[{{$returnType}}](o.ID, objc.Sel("{{.Selector}}"), {{formatMethodParamNames .}})
+	{{- else}}
+	objc.Send[objc.ID](o.ID, objc.Sel("{{.Selector}}"), {{formatMethodParamNames .}})
+	{{- end}}
+}
+{{- end}}
+
+{{- range .OptionalMethods}}
+
+// {{.Name}} implements the {{$wrapperInterfaceName}} interface.
+// This optional method is called directly; checking selector availability is the caller's responsibility.
+{{- $goReturnType := mapObjCTypeToGo .ReturnType $framework}}
+{{- $returnType := $goReturnType}}
+{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}{{$returnType = typeToInterfaceType $goReturnType}}{{end}}
+{{- $hasReturnValue := and (ne .ReturnType "") (ne .ReturnType "void")}}
+func (o *{{$wrapperName}}) {{.Name}}({{formatMethodParams .}}){{if $hasReturnValue}} {{$returnType}}{{end}} {
+	{{- if $hasReturnValue}}
+	return objc.Send[{{$returnType}}](o.ID, objc.Sel("{{.Selector}}"), {{formatMethodParamNames .}})
+	{{- else}}
+	objc.Send[objc.ID](o.ID, objc.Sel("{{.Selector}}"), {{formatMethodParamNames .}})
+	{{- end}}
+}
+
+// Has{{.Name}} returns true; this is a placeholder for optional method checks.
+func (o *{{$wrapperName}}) Has{{.Name}}() bool {
+	return true // TODO: Implement proper selector checking when RespondsToSelector is available
+}
+{{- end}}
+
+{{- end}}
+{{- end -}}
+-- methods.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+import "unsafe"
+
+// Method-style wrappers for {{.Framework}} functions.
+// These provide a more idiomatic Go API by grouping related functions as methods on receiver types.
+
+{{range $typeName, $methods := .TypeMethods -}}
+{{range $methods -}}
+{{- $docData := prepareFunctionDocData . $.Framework}}
+{{if $docData.Abstract}}// {{commentLine $docData.Abstract}}{{if not $docData.DocURL}} [Full Topic]{{end}}{{else}}// {{$docData.MethodName}} is a {{$docData.Framework}} function.{{if not $docData.DocURL}} [Full Topic]{{end}}{{end}}
+{{if $docData.HasAvailability -}}
+//
+{{if $docData.IsDeprecated -}}
+// Deprecated: This function was deprecated in {{$docData.DeprecatedPlatform}} {{$docData.DeprecatedVersion}}.
+//
+{{end -}}
+// Added in {{$docData.IntroducedPlatform}} {{$docData.IntroducedVersion}}.
+{{end -}}
+{{if $docData.DocURL -}}
+{{template "doc_comment" $docData}}
+{{end -}}
+func (c {{index $.TypeToRef $typeName}}) {{$docData.MethodName}}({{range $i, $p := $docData.MethodParameters}}{{if $i}}, {{end}}{{$p.Name}} {{$p.Type}}{{end}}){{if $docData.ReturnType}} {{$docData.ReturnType}}{{end}} {
+	{{if $docData.ReturnType}}return {{end}}{{$docData.Name}}(c.Ptr(){{if $docData.MethodParameters}}, {{end}}{{range $i, $p := $docData.MethodParameters}}{{if $i}}, {{end}}{{$p.Name}}{{end}})
+}
+
+{{end -}}
+{{end -}}
+
+-- functions.gen_test.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}_test
+
+import (
+	"testing"
+	"unsafe"
+
+	"{{.OutputModule}}/{{.PackageName}}"
+)
+
+// Suppress unused import errors
+var _ = unsafe.Pointer(nil)
+{{if eq (len .Functions) 0 -}}
+var _ = testing.T{}
+{{end -}}
+
+{{range .Functions -}}
+{{- $docData := prepareFunctionDocData . $.Framework}}
+// Test{{capitalize $docData.Name}} tests the {{$docData.Name}} function.
+// This is a basic smoke test that verifies the function can be called without panicking.
+func Test{{capitalize $docData.Name}}(t *testing.T) {
+	{{if eq (len $docData.Parameters) 0 -}}
+	t.Skip("TODO: Provide test for parameterless {{$docData.Name}}() - may require specific runtime context")
+	{{else -}}
+	t.Skip("TODO: Provide test inputs for {{$docData.Name}}({{range $i, $p := $docData.Parameters}}{{if $i}}, {{end}}{{$p.Type}}{{end}})")
+	{{end -}}
+}
+
+{{end}}
+
+-- examples_test.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}_test
+
+import (
+	"fmt"
+
+	"{{.PackageName}}"
+)
+
+{{range .Functions -}}
+{{- $docData := prepareFunctionDocData . $.Framework}}
+{{if eq (len $docData.Parameters) 0 -}}
+// Example{{$docData.Name}} demonstrates how to use the {{$docData.Name}} function.
+{{if $docData.Abstract -}}
+// {{$docData.Abstract}}
+{{end -}}
+func Example{{$docData.Name}}() {
+	{{if $docData.ReturnType -}}
+	result := {{$.PackageName}}.{{$docData.Name}}()
+	fmt.Printf("Result: %v\n", result)
+	{{else -}}
+	{{$.PackageName}}.{{$docData.Name}}()
+	fmt.Println("Function called successfully")
+	{{end -}}
+}
+
+{{end -}}
+{{end}}
+-- main_test.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}_test
+
+import (
+	"os"
+	"runtime"
+	"testing"
+)
+
+// TestMain locks the main test goroutine to the OS thread before running tests.
+// This is required for {{.Framework}} operations which must run on the main thread.
+func TestMain(m *testing.M) {
+	runtime.LockOSThread()
+	os.Exit(m.Run())
+}
+
+-- objc/objc.go --
+// Package objc provides cached Objective-C runtime helpers.
+//
+// This package wraps purego/objc to provide selector caching for better performance.
+package objc
+
+import (
+	"sync"
+
+	purego "github.com/ebitengine/purego/objc"
+)
+
+// Type aliases for convenience
+type (
+	ID    = purego.ID
+	SEL   = purego.SEL
+	Class = purego.Class
+)
+
+var (
+	selCache sync.Map // map[string]purego.SEL
+)
+
+// Sel returns a cached selector for the given name.
+// This avoids the global lock in purego.RegisterName on repeated calls.
+func Sel(name string) SEL {
+	if sel, ok := selCache.Load(name); ok {
+		return sel.(SEL)
+	}
+	sel := purego.RegisterName(name)
+	selCache.Store(name, sel)
+	return sel
+}
+
+// Send calls purego.Send with the given arguments.
+func Send[T any](id ID, sel SEL, args ...any) T {
+	return purego.Send[T](id, sel, args...)
+}
+
+// GetClass returns the class with the given name.
+func GetClass(name string) Class {
+	return purego.GetClass(name)
+}
+
+var (
+	nsStringClass     Class
+	selStringWithUTF8 SEL
+	initOnce          sync.Once
+)
+
+func initStringHelpers() {
+	nsStringClass = GetClass("NSString")
+	selStringWithUTF8 = Sel("stringWithUTF8String:")
+}
+
+// String converts a Go string to an NSString object.
+// This must be called before passing Go strings to Objective-C methods that expect NSString*.
+// The returned ID is autoreleased.
+func String(s string) ID {
+	initOnce.Do(initStringHelpers)
+	return Send[ID](ID(nsStringClass), selStringWithUTF8, s)
+}
+
+-- objc/objc_test.go --
+package objc
+
+import (
+	"testing"
+
+	purego "github.com/ebitengine/purego/objc"
+)
+
+// BenchmarkSelCached benchmarks the cached Sel() function
+func BenchmarkSelCached(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = Sel("alloc")
+	}
+}
+
+// BenchmarkRegisterNameDirect benchmarks direct objc.RegisterName calls
+func BenchmarkRegisterNameDirect(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = purego.RegisterName("alloc")
+	}
+}
+
+// BenchmarkSelCachedParallel benchmarks the cached Sel() function with parallel access
+func BenchmarkSelCachedParallel(b *testing.B) {
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			_ = Sel("alloc")
+		}
+	})
+}
+
+// BenchmarkRegisterNameDirectParallel benchmarks direct objc.RegisterName with parallel access
+func BenchmarkRegisterNameDirectParallel(b *testing.B) {
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			_ = purego.RegisterName("alloc")
+		}
+	})
+}
+
+// BenchmarkSelCachedMultipleSelectors benchmarks cache with different selectors
+func BenchmarkSelCachedMultipleSelectors(b *testing.B) {
+	selectors := []string{"alloc", "init", "new", "autorelease", "length", "bytes"}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = Sel(selectors[i%len(selectors)])
+	}
+}
+
+// BenchmarkRegisterNameMultipleSelectors benchmarks RegisterName with different selectors
+func BenchmarkRegisterNameMultipleSelectors(b *testing.B) {
+	selectors := []string{"alloc", "init", "new", "autorelease", "length", "bytes"}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = purego.RegisterName(selectors[i%len(selectors)])
+	}
+}
+
+// TestString tests the String helper function
+func TestString(t *testing.T) {
+	// Test that String conversion works without crashing
+	str := String("Hello, World!")
+	if str == 0 {
+		t.Error("Expected non-zero NSString ID")
+	}
+
+	// Test empty string
+	emptyStr := String("")
+	if emptyStr == 0 {
+		t.Error("Expected non-zero NSString ID for empty string")
+	}
+}
+
+// BenchmarkString benchmarks the String conversion function
+func BenchmarkString(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = String("benchmark string")
+	}
+}
+
+-- enums.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+{{debug "enums.gen.go" "Generating %d enums for %s" (len .Enums) .Framework}}
+// Enum types and constants
+{{range $enum := .Enums -}}
+{{debug "enums.gen.go" "Processing enum %s (%d cases)" $enum.Name (len $enum.Cases)}}
+{{$enumName := stripFrameworkPrefix $enum.Name -}}
+{{$underlyingType := enumUnderlyingType $enum -}}
+{{if $enum.Abstract -}}
+// {{$enumName}} - {{$enum.Abstract}}
+{{else -}}
+// {{$enumName}} enum type
+{{end -}}
+{{if $enum.DocURL -}}
+//
+// [Full Topic]: {{convertDocURL $enum.DocURL}}
+{{end -}}
+type {{$enumName}} {{$underlyingType}}
+
+{{if gt (len $enum.Cases) 0 -}}
+const (
+{{range $i, $case := $enum.Cases -}}
+{{$caseName := stripFrameworkPrefix $case.Name -}}
+{{if $case.Abstract}}	// {{$caseName}} - {{$case.Abstract}}
+{{end}}{{if $case.DocURL}}	//
+	// [Full Topic]: {{convertDocURL $case.DocURL}}
+{{end}}	{{$caseName}} {{$enumName}} = {{formatEnumValue $case.IntValue $underlyingType}}
+{{end -}}
+)
+
+{{end -}}
+{{end -}}
+-- constants.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+{{if gt (len .Constants) 0 -}}
+// Pixel data formats for image input, output, and processing.
+//
+// [Full Topic]: https://developer.apple.com/documentation/CoreImage/CIFormat
+const (
+{{range $const := .Constants -}}
+{{if eq $const.Type "CIFormat" -}}
+{{if $const.Abstract}}	// {{$const.Name}} - {{$const.Abstract}}
+{{end}}{{if $const.DocURL}}	//
+	// [Full Topic]: {{convertDocURL $const.DocURL}}
+{{end}}	{{$const.Name}} {{$const.Type}} = 0 // TODO: Extract actual value from SDK
+{{end -}}
+{{end -}}
+)
+{{end -}}
+-- typedefs.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+{{if or (typedefsNeedUnsafe .) (typedefsNeedObjc .) -}}
+
+import (
+{{if typedefsNeedObjc . -}}
+	"github.com/tmc/appledocs/generated/objc"
+{{end -}}
+{{if typedefsNeedUnsafe . -}}
+	"unsafe"
+{{end -}}
+)
+{{end}}
+{{if gt (len .Typedefs) 0 -}}
+// Type aliases and typedefs
+{{range $typedef := .Typedefs -}}
+{{if ne $typedef.Name "" -}}
+{{$typeName := "" -}}
+{{if eq $.Framework "ObjectiveC" -}}
+{{$typeName = $typedef.Name -}}
+{{else -}}
+{{$typeName = title (stripObjCPrefix $typedef.Name) -}}
+{{end -}}
+{{if not (isValidGoIdentifier $typeName) -}}
+// SKIPPED: {{$typedef.Name}} - invalid Go identifier "{{$typeName}}"
+// Original type: {{$typedef.BaseType}}
+{{else if shouldSkipTypedef $typedef -}}
+// SKIPPED: {{$typedef.Name}} - conflicts with existing enum "{{$typeName}}"
+{{else -}}
+{{if $typedef.Abstract -}}
+// {{$typeName}} - {{$typedef.Abstract}}
+{{else -}}
+// {{$typeName}} type alias
+{{end -}}
+{{if $typedef.DocURL -}}
+//
+// [Full Topic]: {{convertDocURL $typedef.DocURL}}
+{{end -}}
+{{if eq $typeName "Index" -}}
+type {{$typeName}} int64
+{{else if eq $typedef.BaseType "int" -}}
+type {{$typeName}} int32
+{{else if eq $typedef.BaseType "unsigned int" -}}
+type {{$typeName}} uint32
+{{else if eq $typedef.BaseType "short" -}}
+type {{$typeName}} int16
+{{else if eq $typedef.BaseType "unsigned short" -}}
+type {{$typeName}} uint16
+{{else if eq $typedef.BaseType "NSInteger" -}}
+type {{$typeName}} int
+{{else if eq $typedef.BaseType "NSUInteger" -}}
+type {{$typeName}} uint
+{{else if eq $typedef.BaseType "double" -}}
+type {{$typeName}} = float64
+{{else if eq $typedef.BaseType "float32" -}}
+type {{$typeName}} = float32
+{{else if eq $typedef.BaseType "float64" -}}
+type {{$typeName}} = float64
+{{else if eq $typedef.BaseType "uint32" -}}
+type {{$typeName}} = uint32
+{{else if eq $typedef.BaseType "int32" -}}
+type {{$typeName}} = int32
+{{else if eq $typedef.BaseType "uint64" -}}
+type {{$typeName}} = uint64
+{{else if eq $typedef.BaseType "int64" -}}
+type {{$typeName}} = int64
+{{else if or (eq $typedef.BaseType "NSString *") (eq $typedef.BaseType "NSString*") -}}
+// {{$typedef.Name}} is a string typedef
+type {{$typeName}} = string
+{{else if strContains $typedef.BaseType "^" -}}
+// {{$typedef.Name}} is a block type: {{$typedef.BaseType}}
+// Block types are not yet fully supported in Go bindings
+type {{$typeName}} uintptr
+{{else -}}
+{{$callbackInfo := parseCFunctionPointer $typedef.BaseType -}}
+{{if $callbackInfo.IsCallback -}}
+// {{$typedef.Name}} is a callback function
+// C type: {{$typedef.BaseType}}
+type {{$typeName}} = {{$callbackInfo.GoType}}
+{{else -}}
+// {{$typedef.Name}} has base type: {{$typedef.BaseType}}
+type {{$typeName}} uintptr
+{{end -}}
+{{end -}}
+{{end -}}
+
+{{end -}}
+{{end -}}
+{{end -}}
+

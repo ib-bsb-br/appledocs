@@ -1,0 +1,469 @@
+# Darwinkit-style template variants
+# These templates generate one file per class with darwinkit-compatible bindings
+# Following the pattern from https://github.com/progrium/darwinkit
+
+-- module --
+{{/* Module template for DarwinKit variant - generates one file per class */}}
+#-- doc.gen.go --
+{{template "doc.gen.go" .}}
+#-- gen.go --
+{{template "gen.go" .}}
+{{- if gt (len .Functions) 0}}
+#-- functions.gen.go --
+{{template "functions.gen.go" .}}
+{{- end}}
+{{- if gt (len .Classes) 0}}
+#-- types.gen.go --
+{{template "types.gen.go" .}}
+{{- $framework := .Framework}}
+{{- range .Classes}}
+#-- {{classFileName .Name}} --
+{{/* Compute required imports for this class - check class methods and instance methods separately */}}
+{{- $classImports := getRequiredImports (prepareClassMethods .Methods) $framework }}
+{{- $instImports := getRequiredImports (prepareInstanceMethods .Methods) $framework }}
+// Code generated from Apple documentation for {{$framework}}. DO NOT EDIT.
+
+package {{$.PackageName}}
+
+import (
+	"unsafe"
+
+	"github.com/ebitengine/purego/objc"
+{{- $allImports := mergeImports $classImports $instImports }}
+{{- range sortedImportPaths $allImports }}
+	"{{.}}"
+{{- end}}
+)
+
+// The class instance for the [{{classToStructName .Name}}] class.
+var {{classToVarName .Name}} _{{classToVarName .Name}}
+
+func init() {
+	{{classToVarName .Name}} = _{{classToVarName .Name}}{objc.GetClass("{{.Name}}")}
+}
+
+type _{{classToVarName .Name}} struct {
+	objc.Class
+}
+
+// An interface definition for the [{{classToStructName .Name}}] class.
+type {{classToInterfaceName .Name}} interface {
+	ID() objc.ID
+{{- range sortMethodsByName (prepareInstanceMethods .Methods)}}
+	{{.Name}}({{formatMethodParams . $framework}}){{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{mapObjCTypeToGo .ReturnType $framework}}{{end}}
+{{- end}}
+}
+
+{{if .Abstract -}}
+// {{.Abstract}} [Full Topic]
+{{end -}}
+{{if .DocURL -}}
+//
+// [Full Topic]: {{.DocURL}}
+{{end -}}
+type {{classToStructName .Name}} struct {
+	id objc.ID
+}
+
+func {{classToStructName .Name}}From(ptr unsafe.Pointer) {{classToStructName .Name}} {
+	return {{classToStructName .Name}}{
+		id: objc.ID(ptr),
+	}
+}
+
+// ID returns the underlying objc.ID.
+func ({{receiverName (classToStructName .Name) false}} {{classToStructName .Name}}) ID() objc.ID {
+	return {{receiverName (classToStructName .Name) false}}.id
+}
+
+{{$className := .Name -}}
+{{$structName := classToStructName .Name -}}
+{{$varName := classToVarName .Name -}}
+{{$classReceiver := receiverName $structName true -}}
+{{$instReceiver := receiverName $structName false -}}
+
+// Alloc allocates a new instance without initialization.
+func ({{$classReceiver}} _{{$varName}}) Alloc() {{$structName}} {
+	rv := objc.Send[{{$structName}}](objc.ID({{$classReceiver}}.Class), selAlloc)
+	return rv
+}
+
+// New creates and returns a new initialized instance.
+func ({{$classReceiver}} _{{$varName}}) New() {{$structName}} {
+	rv := objc.Send[{{$structName}}](objc.ID({{$classReceiver}}.Class), selNew)
+	objc.Send[objc.ID](rv.ID(), selAutorelease)
+	return rv
+}
+
+// New{{$structName}} creates and returns a new initialized instance.
+func New{{$structName}}() {{$structName}} {
+	return {{$varName}}.New()
+}
+
+// Init initializes the instance.
+func ({{$instReceiver}} {{$structName}}) Init() {{$structName}} {
+	rv := objc.Send[{{$structName}}]({{$instReceiver}}.ID(), selInit)
+	return rv
+}
+
+{{- range prepareClassMethods .Methods}}
+
+{{- if .Abstract}}
+// {{.Abstract}} [Full Topic]
+{{end -}}
+{{- if .DocURL}}
+//
+// [Full Topic]: {{.DocURL}}
+{{end -}}
+func ({{$classReceiver}} _{{$varName}}) {{.Name}}({{formatMethodParams . $framework}}) {{mapObjCTypeToGo .ReturnType $framework}} {
+{{- $paramNames := formatMethodParamNames .}}
+{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}
+	rv := objc.Send[{{mapObjCTypeToGo .ReturnType $framework}}](objc.ID({{$classReceiver}}.Class), objc.RegisterName("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+	return rv
+{{- else}}
+	objc.Send[objc.ID](objc.ID({{$classReceiver}}.Class), objc.RegisterName("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+{{- end}}
+}
+
+{{- if isConstructor . $className}}
+
+// {{$structName}}_{{.Name}} creates a new instance via class method. [Full Topic]
+{{- if .DocURL}}
+//
+// [Full Topic]: {{.DocURL}}
+{{end -}}
+func {{$structName}}_{{.Name}}({{formatMethodParams . $framework}}) {{mapObjCTypeToGo .ReturnType $framework}} {
+	return {{$varName}}.{{.Name}}({{formatMethodParamNames .}})
+}
+{{- end}}
+{{- end}}
+
+{{- range prepareInstanceMethods .Methods}}
+
+{{- if .Abstract}}
+// {{.Abstract}} [Full Topic]
+{{end -}}
+{{- if .DocURL}}
+//
+// [Full Topic]: {{.DocURL}}
+{{end -}}
+func ({{$instReceiver}} {{$structName}}) {{.Name}}({{formatMethodParams . $framework}}){{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{mapObjCTypeToGo .ReturnType $framework}}{{end}} {
+{{- $paramNames := formatMethodParamNames .}}
+{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}
+	rv := objc.Send[{{mapObjCTypeToGo .ReturnType $framework}}]({{$instReceiver}}.ID(), objc.RegisterName("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+	return rv
+{{- else}}
+	objc.Send[objc.ID]({{$instReceiver}}.ID(), objc.RegisterName("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+{{- end}}
+}
+{{- end}}
+
+{{- range .Properties}}
+{{- $propName := propertyToGoName .Name}}
+{{- $propType := mapObjCTypeToGo .Type $framework}}
+{{- $isReadonly := contains .Attributes "readonly"}}
+{{- if ne $propType ""}}
+
+{{- if .Abstract}}
+// {{.Abstract}} [Full Topic]
+{{end -}}
+{{- if .DocURL}}
+//
+// [Full Topic]: {{.DocURL}}
+{{end -}}
+func ({{$instReceiver}} {{$structName}}) {{$propName}}() {{$propType}} {
+	rv := objc.Send[{{$propType}}]({{$instReceiver}}.ID(), objc.RegisterName("{{.Name}}"))
+	return rv
+}
+
+{{- if not $isReadonly}}
+
+{{- if .Abstract}}
+// Set{{$propName}} sets the value of the {{.Name}} property. [Full Topic]
+{{end -}}
+{{- if .DocURL}}
+//
+// [Full Topic]: {{.DocURL}}
+{{end -}}
+func ({{$instReceiver}} {{$structName}}) Set{{$propName}}(value {{$propType}}) {
+	objc.Send[objc.ID]({{$instReceiver}}.ID(), objc.RegisterName("set{{capitalize .Name}}:"), value)
+}
+{{- end}}
+{{- end}}
+{{- end}}
+
+{{- end}}
+{{- end}}
+
+-- doc.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+{{if .Abstract -}}
+// Package {{.PackageName}} provides DarwinKit-style Go bindings for the {{.Framework}} framework.
+//
+// {{.Abstract}} [Full Topic]
+{{else -}}
+// Package {{.PackageName}} provides DarwinKit-style Go bindings for the {{.Framework}} framework.
+{{end -}}
+//
+// These bindings are compatible with the DarwinKit framework pattern and
+// provide objc-runtime based access to {{.Framework}}.
+{{if .DocURL -}}
+//
+// [Full Topic]: {{.DocURL}}
+{{end -}}
+package {{.PackageName}}
+
+-- gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+//go:generate rm -f *.gen.go
+//go:generate appledocs generate -framework {{.Framework}} -variant darwinkit -output .
+
+-- class.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+import (
+	"unsafe"
+
+	"github.com/ebitengine/purego/objc"
+)
+
+// The class instance for the [{{classToStructName .Name}}] class.
+var {{classToVarName .Name}} _{{classToVarName .Name}}
+
+func init() {
+	{{classToVarName .Name}} = _{{classToVarName .Name}}{objc.GetClass("{{.Name}}")}
+}
+
+type _{{classToVarName .Name}} struct {
+	objc.Class
+}
+
+// An interface definition for the [{{classToStructName .Name}}] class.
+type {{classToInterfaceName .Name}} interface {
+{{- if .SuperClass}}
+	{{classToInterfaceName .SuperClass}}
+{{- else}}
+	ID() objc.ID
+{{- end}}
+{{- range sortMethodsByName (prepareInstanceMethods .Methods)}}
+	{{.Name}}({{formatMethodParams . $.Framework}}){{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{mapObjCTypeToGo .ReturnType $.Framework}}{{end}}
+{{- end}}
+}
+
+{{if .Abstract -}}
+// {{.Abstract}} [Full Topic]
+{{end -}}
+{{if .DocURL -}}
+//
+// [Full Topic]: {{.DocURL}}
+{{end -}}
+type {{classToStructName .Name}} struct {
+{{- if .SuperClass}}
+	{{classToStructName .SuperClass}}
+{{- else}}
+	id objc.ID
+{{- end}}
+}
+
+func {{classToStructName .Name}}From(ptr unsafe.Pointer) {{classToStructName .Name}} {
+	return {{classToStructName .Name}}{
+{{- if .SuperClass}}
+		{{classToStructName .SuperClass}}: {{classToStructName .SuperClass}}From(ptr),
+{{- else}}
+		id: objc.ID(ptr),
+{{- end}}
+	}
+}
+
+// ID returns the underlying objc.ID.
+func ({{receiverName (classToStructName .Name) false}} {{classToStructName .Name}}) ID() objc.ID {
+{{- if .SuperClass}}
+	return {{receiverName (classToStructName .Name) false}}.{{classToStructName .SuperClass}}.ID()
+{{- else}}
+	return {{receiverName (classToStructName .Name) false}}.id
+{{- end}}
+}
+
+{{$className := .Name -}}
+{{$structName := classToStructName .Name -}}
+{{$varName := classToVarName .Name -}}
+{{$classReceiver := receiverName $structName true -}}
+{{$instReceiver := receiverName $structName false -}}
+
+// Alloc allocates a new instance without initialization.
+func ({{$classReceiver}} _{{$varName}}) Alloc() {{$structName}} {
+	rv := objc.Send[{{$structName}}](objc.ID({{$classReceiver}}.Class), selAlloc)
+	return rv
+}
+
+// New creates and returns a new initialized instance.
+func ({{$classReceiver}} _{{$varName}}) New() {{$structName}} {
+	rv := objc.Send[{{$structName}}](objc.ID({{$classReceiver}}.Class), selNew)
+	objc.Send[objc.ID](rv.ID(), selAutorelease)
+	return rv
+}
+
+// New{{$structName}} creates and returns a new initialized instance.
+func New{{$structName}}() {{$structName}} {
+	return {{$varName}}.New()
+}
+
+// Init initializes the instance.
+func ({{$instReceiver}} {{$structName}}) Init() {{$structName}} {
+	rv := objc.Send[{{$structName}}]({{$instReceiver}}.ID(), selInit)
+	return rv
+}
+
+{{- range prepareClassMethods .Methods}}
+
+{{- if .Abstract}}
+// {{.Abstract}} [Full Topic]
+{{end -}}
+{{- if .DocURL}}
+//
+// [Full Topic]: {{.DocURL}}
+{{end -}}
+func ({{$classReceiver}} _{{$varName}}) {{.Name}}({{formatMethodParams . $.Framework}}) {{mapObjCTypeToGo .ReturnType $.Framework}} {
+{{- $paramNames := formatMethodParamNames .}}
+	{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}rv := {{end}}objc.Call[{{if and (ne .ReturnType "") (ne .ReturnType "void")}}{{mapObjCTypeToGo .ReturnType $.Framework}}{{else}}objc.Void{{end}}]({{$classReceiver}}, objc.Sel("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+	{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}
+	return rv
+	{{- end}}
+}
+
+{{- if isConstructor . $className}}
+
+// {{$structName}}_{{.Name}} creates a new instance via class method. [Full Topic]
+{{- if .DocURL}}
+//
+// [Full Topic]: {{.DocURL}}
+{{end -}}
+func {{$structName}}_{{.Name}}({{formatMethodParams . $.Framework}}) {{mapObjCTypeToGo .ReturnType $.Framework}} {
+	return {{$varName}}.{{.Name}}({{formatMethodParamNames .}})
+}
+{{- end}}
+{{- end}}
+
+{{- range prepareInstanceMethods .Methods}}
+
+{{- if .Abstract}}
+// {{.Abstract}} [Full Topic]
+{{end -}}
+{{- if .DocURL}}
+//
+// [Full Topic]: {{.DocURL}}
+{{end -}}
+func ({{$instReceiver}} {{$structName}}) {{.Name}}({{formatMethodParams . $.Framework}}){{if and (ne .ReturnType "") (ne .ReturnType "void")}} {{mapObjCTypeToGo .ReturnType $.Framework}}{{end}} {
+{{- $paramNames := formatMethodParamNames .}}
+	{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}rv := {{end}}objc.Call[{{if and (ne .ReturnType "") (ne .ReturnType "void")}}{{mapObjCTypeToGo .ReturnType $.Framework}}{{else}}objc.Void{{end}}]({{$instReceiver}}, objc.Sel("{{.Selector}}"){{if $paramNames}}, {{$paramNames}}{{end}})
+	{{- if and (ne .ReturnType "") (ne .ReturnType "void")}}
+	return rv
+	{{- end}}
+}
+{{- end}}
+
+-- functions.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+import (
+	"unsafe"
+
+	"github.com/ebitengine/purego"
+)
+
+var (
+{{- range .Functions}}
+	_{{.Name}} func({{range $i, $p := prepareParams .Parameters $.Framework}}{{if $i}}, {{end}}{{$p.Type}}{{end}}){{if .ReturnType}}{{if ne .ReturnType "void"}} {{mapCTypeToGo .ReturnType $.Framework}}{{end}}{{end}}
+{{- end}}
+)
+
+func init() {
+	lib, err := purego.Dlopen("/System/Library/Frameworks/{{.Framework}}.framework/{{.Framework}}", purego.RTLD_LAZY|purego.RTLD_GLOBAL)
+	if err != nil {
+		panic(err)
+	}
+
+{{- range .Functions}}
+	tryRegister(&_{{.Name}}, lib, "{{.Name}}")
+{{- end}}
+}
+
+func tryRegister(fn interface{}, lib uintptr, name string) {
+	defer func() {
+		if r := recover(); r != nil {
+			// Symbol not found
+		}
+	}()
+	purego.RegisterLibFunc(fn, lib, name)
+}
+
+{{range .Functions}}
+{{- if .Abstract}}
+// {{.Abstract}} [Full Topic]
+{{end -}}
+{{- if .DocURL}}
+//
+// [Full Topic]: {{.DocURL}}
+{{end -}}
+func {{.Name}}({{range $i, $p := prepareParams .Parameters $.Framework}}{{if $i}}, {{end}}{{$p.Name}} {{$p.Type}}{{end}}){{if .ReturnType}}{{if ne .ReturnType "void"}} {{mapCTypeToGo .ReturnType $.Framework}}{{end}}{{end}} {
+	{{- if .ReturnType}}{{if ne .ReturnType "void"}}return {{end}}{{end}}_{{.Name}}({{range $i, $p := prepareParams .Parameters $.Framework}}{{if $i}}, {{end}}{{$p.Name}}{{end}})
+}
+
+{{end}}
+
+-- types.gen.go --
+// Code generated from Apple documentation for {{.Framework}}. DO NOT EDIT.
+
+package {{.PackageName}}
+
+import "github.com/ebitengine/purego/objc"
+
+// Common selectors cached for performance
+var (
+	selAlloc       = objc.RegisterName("alloc")
+	selNew         = objc.RegisterName("new")
+	selInit        = objc.RegisterName("init")
+	selAutorelease = objc.RegisterName("autorelease")
+)
+
+// Common CoreGraphics struct types
+type CGFloat = float64
+
+type CGPoint struct {
+	X CGFloat
+	Y CGFloat
+}
+
+type CGSize struct {
+	Width  CGFloat
+	Height CGFloat
+}
+
+type CGRect struct {
+	Origin CGPoint
+	Size   CGSize
+}
+
+type CGAffineTransform struct {
+	A  CGFloat
+	B  CGFloat
+	C  CGFloat
+	D  CGFloat
+	Tx CGFloat
+	Ty CGFloat
+}
+
+// Aliases for common use - NSRange, NSPoint, NSSize, NSRect
+type Range = CGPoint  // For NSRange - structured as {location, length}
+type Point = CGPoint
+type Size = CGSize
+type Rect = CGRect
+
